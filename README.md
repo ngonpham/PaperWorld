@@ -9,6 +9,10 @@ as sheet music.
 
 **▶ Play:** https://aadil6971.github.io/PaperWorld/
 
+**New — [Cánh Giấy · Đà Nẵng](danang/):** a sister game about flying, set over Mỹ Khê beach, the Sơn Trà
+peninsula, the Marble Mountains and Hội An old town. Four kinds of wings, thermals and ridge lift, ring routes
+and a travel journal. See [danang/README.md](danang/README.md).
+
 ## Features
 
 - **Endless world** streamed in chunks: towns, meadows, forests, cherry groves, lakes and snow-capped mountains
