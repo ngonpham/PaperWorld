@@ -2090,7 +2090,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
             const lots = rand() < 0.3 ? [[0, 0, 58, 58]] : rand() < 0.5 ? [[-15, 0, 28, 58], [15, 0, 28, 58]] : [[-15, -15, 28, 28], [15, -15, 28, 28], [-15, 15, 28, 28], [15, 15, 28, 28]];
             for (const [ox, oz, lw, ld] of lots) {
               const x = cx + ox, z = cz + oz, y = gy(x, z);
-              if (lineDist(R_HAN, x, z) < 70 || S.sd < 90) continue;
+              if (lineDist(R_HAN, x, z) < 70 || S.sd < 90 || S.karst > 0 || kept(x, z)) continue;
               const tall = rand() < 0.04 + 0.42 * Math.max(riverP, beachP) * (0.4 + 0.6 * coreP);
               let w = lw - RR(4, 9), d = ld - RR(4, 9), h = RR(6, 13) + 10 * coreP * rand();
               if (tall) { h = RR(26, 64); w = Math.min(w, RR(14, 22)); d = Math.min(d, RR(12, 20)); }
@@ -2172,6 +2172,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           if (S.karst > 0 || kept(xc, z) || lineDist(R_COCO, xc, z) < 40) continue;
           for (let k = 0; k < 4; k++) {
             const x = xc + RR(-30, 30), zz = z + RR(-35, 35), y = gy(x, zz), w = RR(10, 18), d = RR(8, 14), h = RR(6, 15);
+            if (S.karst > 0 || kept(x, zz)) continue;
             put("bld", x, y + h / 2, zz, w, h, d, 0, pick(PALS.city));
             colBox(x, zz, w / 2, d / 2, 0, y - 1, y + h, "bld");
           }
@@ -2386,6 +2387,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           if (!n) continue;
           const [x, z, h] = findHigh(k[0], k[1], k[2] * 0.5, 6);
           disc(n[0], "Ngũ Hành Sơn", n[1], n[2], n[3], x, h + 10, z, k[2] + 60);
+          KEEP.push([k[0], k[1], k[2] + 35]);
           LANDMARKS[n[0]] = { x, y: h, z, r: k[2] };
         }
         // trees clinging to the karsts
