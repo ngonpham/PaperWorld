@@ -2869,10 +2869,10 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
             const sx = x - WIND.dir.x * off, sz = z - WIND.dir.z * off;
             const gx = (gridH(sx + 15, sz) - gridH(sx - 15, sz)) / 30, gz = (gridH(sx, sz + 15) - gridH(sx, sz - 15)) / 30;
             const up = gx * WIND.dir.x + gz * WIND.dir.z;
-            const r = WIND.speed * (up > 0 ? up * 1.9 : up * 0.6);
+            const r = WIND.speed * (up > 0 ? Math.min(up, 0.9) * 1.1 : Math.max(up, -0.9) * 0.5);
             if (Math.abs(r) > Math.abs(ridge)) ridge = r;
           }
-          ridge *= smooth(320, 20, agl) * clamp(gh / 60, 0.3, 1.4);
+          ridge = clamp(ridge * smooth(320, 20, agl) * clamp(gh / 60, 0.3, 1.2), -2.5, 4.2);
         }
         // sink over open water, cloud suck under the cumulus
         let extra = gh < -1 ? -0.25 : 0, inC = 0;
@@ -3493,7 +3493,8 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
       function spawnAt(where) {
         const L = LANDMARKS;
         let x, y, z, psi;
-        if (where === "sontra") { x = L.banco.x - 25; z = L.banco.z + 30; y = L.banco.y + 22; psi = psiTo(-0.55, 1); }
+        if (where === "sontra" && F.c.glide) { x = 1380; z = -2390; y = gridH(1380, -2390) + 45; psi = psiTo(0.9, -0.45); } // ridge band above Linh Ứng
+        else if (where === "sontra") { x = L.radar.x - 40; z = L.radar.z + 60; y = L.radar.y + 45; psi = psiTo(-0.45, 1); }
         else if (where === "nguhanh") { x = 760; z = 470; y = 85; psi = psiTo(0, 1); }
         else if (where === "hoian") { x = 260; z = 3575; y = 42; psi = psiTo(1, -0.05); }
         else if (where && where.x !== undefined) { x = where.x; z = where.z; y = Math.max(where.y ?? 0, gridH(x, z) + 70, 70); psi = where.psi ?? F.psi; }
