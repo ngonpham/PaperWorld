@@ -12,7 +12,8 @@ Một vùng Đà Nẵng – Hội An được dựng tay theo địa lý thật,
 
 | Vùng | Có gì |
 | --- | --- |
-| **Biển Mỹ Khê** | Bãi cát trắng, dù che, thúng chai, cứu hộ, dù kéo, hải âu, khách sạn ven biển |
+| **Biển Mỹ Khê** | Bãi cát trắng, dù che, thúng chai, cứu hộ, đội cano kéo dù lượn dọc bờ biển, hải âu, khách sạn ven biển |
+| **Thành phố** | Nhà cửa rực rỡ tông cam – xanh Ahamove theo phong cách Paper World, toà **Ahamove Sky Hub** có sân đỗ trực thăng trên nóc, bãi đáp ở Mỹ Khê, Hội An và cảng Tiên Sa, trực thăng giao hàng Ahamove bay qua lại |
 | **Sông Hàn** | Cầu Rồng (về đêm phun lửa, phun nước, đổi màu), Thuận Phước, Sông Hàn, Trần Thị Lý, Vòng quay Mặt Trời, Cá chép hoá rồng, Nhà thờ Con Gà, sân bay có máy bay cất/hạ cánh |
 | **Bán đảo Sơn Trà** | Chùa Linh Ứng và tượng Quan Âm, trạm radar trên đỉnh, đỉnh Bàn Cờ (bãi cất cánh dù lượn), hải đăng Tiên Sa, Cây Đa ngàn năm, cảng Tiên Sa, đàn voọc chà vá chân nâu |
 | **Ngũ Hành Sơn** | Năm ngọn núi đá vôi Kim – Mộc – Thủy – Hỏa – Thổ, chùa Tam Thai, động Huyền Không, làng đá Non Nước |
@@ -21,7 +22,7 @@ Một vùng Đà Nẵng – Hội An được dựng tay theo địa lý thật,
 
 ## Bay
 
-Bốn loại cánh dùng chung một mô hình vật lý point-mass (lực nâng, hệ số tải `n`, thất tốc, lực cản cảm ứng, năng lượng):
+Năm phương tiện: bốn loại cánh dùng chung một mô hình vật lý point-mass (lực nâng, hệ số tải `n`, thất tốc, lực cản cảm ứng, năng lượng), cộng trực thăng có mô hình bay riêng:
 
 | Cánh | Đặc điểm |
 | --- | --- |
@@ -29,6 +30,7 @@ Bốn loại cánh dùng chung một mô hình vật lý point-mass (lực nâng
 | 🪂 **Dù lượn** | Chậm, không có động cơ: sống nhờ cột khí nóng và gió sườn núi, điều chỉnh bằng thanh tốc độ và phanh |
 | 🐦 **Chim yến** | Vỗ cánh để leo, xếp cánh để bổ nhào, rẽ gắt nhất |
 | 🛩 **Thủy phi cơ** | Có động cơ, đáp xuống biển và cất cánh lại từ mặt nước |
+| 🚁 **Trực thăng Ahamove** | Lơ lửng tại chỗ, tiến/lùi, đi ngang, lên/xuống; đáp lên nóc nhà và bãi đáp (Hỗ trợ bay tự giảm tốc khi sắp chạm) |
 
 - **Không khí sống động:** gió biển thổi từ hướng Đông – Đông Nam ban ngày (gió đất về đêm); sườn núi đón gió tạo lực nâng; 25 cột khí nóng nghiêng theo gió, mạnh nhất buổi trưa, có mây tích đánh dấu; mây có thể bay xuyên qua.
 - **Đồng hồ bay:** tốc độ, chân trời nhân tạo, variometer kèm tiếng bíp như dù lượn thật, độ cao, la bàn, cảnh báo **THẤT TỐC** và **KÉO LÊN!**
@@ -39,7 +41,7 @@ Bốn loại cánh dùng chung một mô hình vật lý point-mass (lực nâng
 ## Mục tiêu
 
 - **8 tuyến bay** có huy chương vàng/bạc/đồng và kỷ lục: Luồn gầm cầu sông Hàn, Vòng quanh Sơn Trà, Năm ngọn Ngũ Hành, Phố Hội đèn lồng, Lướt sóng Mỹ Khê, Đại lộ ven biển Sơn Trà → Hội An, Ra đảo Cù Lao Chàm, Cầu Vàng trên mây.
-- **33 dấu mộc địa danh** trong sổ tay hành trình, **12 tổ yến vàng** giấu trên vách đá, **18 thử thách** (rồng phun lửa, vòng quanh Mẹ Quan Âm, cao nghìn mét, ném thia lia, phố Hội về đêm…), bưu thiếp khi chụp ảnh đúng địa danh.
+- **34 dấu mộc địa danh** trong sổ tay hành trình, **12 tổ yến vàng** giấu trên vách đá, **19 thử thách** (rồng phun lửa, đáp trực thăng lên Ahamove Sky Hub, vòng quanh Mẹ Quan Âm, cao nghìn mét, ném thia lia, phố Hội về đêm…), bưu thiếp khi chụp ảnh đúng địa danh.
 - Tiến trình được lưu trên thiết bị.
 
 ## Điều khiển
@@ -52,7 +54,8 @@ Bốn loại cánh dùng chung một mô hình vật lý point-mass (lực nâng
 | Shift | Tăng tốc · thanh tốc độ · ga tối đa |
 | X | Phanh gió · thắng dù · giảm ga |
 | Space | Vỗ cánh · nhào lộn (Space = lộn xoắn, Space + W = lộn vòng) · cất cánh lại |
-| 1 – 4 | Đổi cánh |
+| 1 – 5 | Đổi phương tiện (5 = trực thăng Ahamove) |
+| Trực thăng | W/S tiến · lùi, A/D xoay, Q/E đi ngang, Space lên, X xuống, Shift bay nhanh |
 | C | Đổi góc máy |
 | M · L · J | Bản đồ (bấm để bay tới) · tuyến bay · sổ tay |
 | T · 0 · K | Đổi giờ · tự động · mưa |

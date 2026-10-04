@@ -80,6 +80,7 @@
       .pick { margin: 6px 0 10px; }
       .pick .tiny { margin-bottom: 6px; opacity: 0.75; }
       .pick .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+      #pickCraft { grid-template-columns: repeat(5, 1fr); }
       .opt { border: 1.5px solid var(--ink); border-radius: 4px; background: #fff; padding: 7px 4px 6px; text-align: center; cursor: pointer; box-shadow: 1.5px 1.5px 0 var(--ink); transition: transform 0.08s; }
       .opt b { display: block; font-size: 20px; line-height: 1.1; }
       .opt span { display: block; font: 700 8px/1.2 var(--ui); letter-spacing: 0.04em; margin-top: 3px; }
@@ -303,6 +304,7 @@
             <div class="opt" data-c="glider"><b>🪂</b><span>Dù lượn</span></div>
             <div class="opt" data-c="swift"><b>🐦</b><span>Chim yến</span></div>
             <div class="opt" data-c="seaplane"><b>🛩</b><span>Thủy phi cơ</span></div>
+            <div class="opt" data-c="heli"><b>🚁</b><span>Trực thăng Ahamove</span></div>
           </div>
         </div>
         <div class="pick">
@@ -320,7 +322,7 @@
         <div class="keys">
           <b>W/S</b> ngóc / chúc mũi · <b>A/D</b> nghiêng cánh · <b>Q/E</b> bánh lái ·
           <b>SHIFT</b> tăng tốc · <b>SPACE</b> vỗ cánh / nhào lộn · <b>X</b> phanh gió ·
-          <b>1–4</b> đổi cánh · <b>C</b> góc máy · <b>M</b> bản đồ · <b>L</b> tuyến bay ·
+          <b>1–5</b> đổi cánh · <b>C</b> góc máy · <b>M</b> bản đồ · <b>L</b> tuyến bay ·
           <b>J</b> sổ tay · <b>P</b> chụp ảnh · <b>T</b> giờ · <b>R</b> bay lại · kéo chuột để ngắm
         </div>
       </div>
@@ -369,6 +371,7 @@
           <button class="btn" data-craft="glider" title="2 · Dù lượn">🪂</button>
           <button class="btn" data-craft="swift" title="3 · Chim yến">🐦</button>
           <button class="btn" data-craft="seaplane" title="4 · Thủy phi cơ">🛩</button>
+          <button class="btn" data-craft="heli" title="5 · Trực thăng Ahamove">🚁</button>
         </div>
       </div>
 
@@ -428,7 +431,8 @@
           <tr><td>SHIFT</td><td>Tăng tốc · thanh tốc độ (dù) · ga tối đa (thủy phi cơ)</td></tr>
           <tr><td>X</td><td>Phanh gió · thắng dù · giảm ga</td></tr>
           <tr><td>SPACE</td><td>Vỗ cánh (chim yến) · nhào lộn: SPACE+S lộn vòng, SPACE+A/D lộn xoắn · cất cánh lại khi đã đáp</td></tr>
-          <tr><td>1 · 2 · 3 · 4</td><td>Máy bay giấy · dù lượn · chim yến · thủy phi cơ</td></tr>
+          <tr><td>1 · 2 · 3 · 4 · 5</td><td>Máy bay giấy · dù lượn · chim yến · thủy phi cơ · trực thăng Ahamove</td></tr>
+          <tr><td>Trực thăng</td><td>W/S tiến · lùi · A/D xoay · Q/E đi ngang · SPACE lên · X xuống · SHIFT bay nhanh · đáp lên chữ H</td></tr>
           <tr><td>C</td><td>Đổi góc máy: bám đuôi, gần, buồng lái, điện ảnh, toàn cảnh</td></tr>
           <tr><td>M · L · J</td><td>Bản đồ (bấm để bay tới) · tuyến bay · sổ tay</td></tr>
           <tr><td>T · 0 · K</td><td>Đổi giờ · tự động · mưa</td></tr>
@@ -1704,14 +1708,17 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         forest: ["#3f7d45", "#4f8f4a", "#5f9e50", "#2f6b3f", "#6aa858", "#4a8a3c"],
         mtn: ["#3a7044", "#46804a", "#557f4a", "#2f6340", "#5a8f55"],
         karst: ["#6aa35a", "#7fb562", "#5a944f", "#8bbf6a"],
-        city: ["#f4f1ea", "#eae6dc", "#f6e9d2", "#dfe8ee", "#e9dfd0", "#f0e3c8", "#d6e4e8", "#f4ece0", "#e8eef2", "#f7e8dc"],
-        tall: ["#cfe0ea", "#e8eef2", "#d8e6ec", "#f2f2ee", "#bcd4e2", "#e6e1d6"],
+        // Paper-World-bright walls led by Ahamove orange and blue
+        city: ["#ff8a3d", "#ffb98a", "#ffd2b0", "#f37021", "#9cc8f5", "#3d8be0", "#bcd9fa", "#ffc48a", "#fff1e2", "#7ee0c3", "#ffd166", "#ff9aa2", "#cfe3ff", "#ffa25c", "#5fa3ec", "#fbf8ef"],
+        tall: ["#3d8be0", "#5fa3ec", "#9cc8f5", "#1f5fbf", "#f37021", "#ff8a3d", "#bcd9fa", "#fff1e2", "#ffb98a"],
+        roofs: ["#f37021", "#e0662f", "#ff8a3d", "#d4552a", "#1f5fbf", "#e2743c", "#2f63b5"],
+        band: ["#f37021", "#1f5fbf", "#ff8a3d", "#3d8be0", "#ffffff"],
         hoi: ["#e9c46a", "#f0cf6d", "#e5b84f", "#f2d58a", "#dfb24a", "#e8c36a", "#eac35d", "#c9d6b0", "#9fc3c8"],
         hoiRoof: ["#8c4a32", "#7a3e2c", "#94553a", "#6e3a2a", "#83452f"],
         rural: ["#f2e6c4", "#efe0b0", "#e8d6a8", "#f4ecd6", "#dce8d0"],
         ruralRoof: ["#b8553a", "#a84b32", "#8c8c94", "#c06040"],
         lantern: ["#e8332a", "#f5a623", "#f2c230", "#e0418f", "#8e44ad", "#2ecc71", "#ff6b3d", "#e8332a", "#f2c230"],
-        umb: ["#e8562a", "#2a9fd6", "#f2c230", "#ffffff", "#1f9a8a", "#e0418f", "#3a5bd9", "#f39c12"],
+        umb: ["#f37021", "#1f5fbf", "#f37021", "#ffffff", "#3d8be0", "#ff8a3d", "#f2c230", "#1f9a8a", "#e0418f"],
         boat: ["#2f6f9f", "#2a5d8f", "#3a7d44", "#c0392b", "#2f8fb0", "#1f6f8b"],
         clothes: ["#e8562a", "#2a9fd6", "#f2c230", "#ffffff", "#1f9a8a", "#e0418f", "#3a5bd9", "#222222", "#f39c12", "#9b59b6"],
       };
@@ -1996,7 +2003,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         });
         colBox(x, z, 4, R + 2, 0, cy - R - 2, cy + R + 2, "wheel");
         colCyl(x, z, 4, 0, cy, "wheel");
-        KEEP.push([x, z, 50]);
+        KEEP.push([x, z, 50], [x + 95, z - 55, 55]); // Asia Park grounds
         disc("sunwheel", "Sông Hàn", "Vòng quay Mặt Trời", "", "Sun Wheel cao 115 m bên bờ tây sông Hàn — một trong những vòng quay lớn nhất thế giới, rực đèn về đêm.", x, cy, z, 110);
         LANDMARKS.sunwheel = { x, y: cy, z };
       }
@@ -2017,7 +2024,104 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         KEEP.push([x, z, 28]);
         disc("nhatho", "Trung tâm", "Nhà thờ Con Gà", "", "Nhà thờ Chính toà Đà Nẵng màu hồng, xây năm 1923 — trên đỉnh tháp có con gà trống chỉ hướng gió.", x, y + 30, z, 90);
       }
+      /* Ahamove: Sky Hub tower with a rooftop helipad, plus pads at Mỹ Khê and Hội An */
+      const AHA = { orange: "#f37021", blue: "#1f5fbf", pads: [] };
+      const ahaTex = (bg, fg, txt, w = 512, h = 128) =>
+        canvasTex(w, h, (g, W, H) => {
+          g.fillStyle = bg; g.fillRect(0, 0, W, H);
+          g.fillStyle = fg; g.font = `800 ${H * 0.62}px 'Be Vietnam Pro', sans-serif`; g.textAlign = "center"; g.textBaseline = "middle";
+          g.fillText(txt, W / 2, H * 0.54);
+        }, false);
+      const padTex = canvasTex(256, 256, (g, W) => {
+        g.fillStyle = "#2b2f3a"; g.beginPath(); g.arc(W / 2, W / 2, W / 2, 0, 7); g.fill();
+        g.strokeStyle = AHA.orange; g.lineWidth = W * 0.06; g.beginPath(); g.arc(W / 2, W / 2, W * 0.4, 0, 7); g.stroke();
+        g.fillStyle = "#ffffff"; g.font = `800 ${W * 0.5}px 'Be Vietnam Pro', sans-serif`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("H", W / 2, W * 0.53);
+      }, false);
+      function helipad(x, y, z, r = 9) {
+        const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.5, 28), [toon("#2b2f3a"), toon(0xffffff, { map: padTex }), toon("#2b2f3a")]);
+        m.position.set(x, y + 0.25, z);
+        m.receiveShadow = true;
+        scene.add(m);
+        const pad = { x, y: y + 0.5, z, r };
+        AHA.pads.push(pad);
+        return pad;
+      }
+      function ahamoveHub() {
+        const x = 235, z = -1260, y = gy(x, z), H = 50, W = 20, g = new THREE.Group();
+        g.position.set(x, y, z);
+        scene.add(g);
+        mk(geoBox(W, H, W), bldMat, 0, H / 2, 0, g, 0.07);
+        for (let k = 0; k < 4; k++) box(W + 0.8, 2.6, W + 0.8, k % 2 ? AHA.blue : AHA.orange, 0, 8 + k * 11, 0, g, 0.05);
+        box(W + 1.6, 1.4, W + 1.6, AHA.orange, 0, H + 0.7, 0, g, 0.06);
+        const sign = toon(0xffffff, { map: ahaTex(AHA.orange, "#ffffff", "ahamove"), emissive: new THREE.Color("#ffffff"), emissiveMap: ahaTex(AHA.orange, "#ffffff", "ahamove"), emissiveIntensity: 0.15 });
+        NIGHT.push((gl) => (sign.emissiveIntensity = 0.15 + gl * 0.9));
+        for (let k = 0; k < 4; k++) {
+          const s = new THREE.Mesh(new THREE.PlaneGeometry(16, 4), sign), a = (k * Math.PI) / 2;
+          s.position.set(Math.sin(a) * (W / 2 + 0.95), H - 4.5, Math.cos(a) * (W / 2 + 0.95));
+          s.rotation.y = a;
+          g.add(s);
+        }
+        colBox(x, z, W / 2 + 0.8, W / 2 + 0.8, 0, y - 2, y + H + 1.4, "bld");
+        const pad = helipad(x, y + H + 1.4, z, 8.5);
+        pad.hub = true;
+        for (let k = 0; k < 8; k++) { const a = (k / 8) * Math.PI * 2; put("slamp", x + Math.cos(a) * 9.4, y + H + 1.9, z + Math.sin(a) * 9.4, 0.35, 0.35, 0.35, 0, k % 2 ? AHA.orange : "#5ab4ff"); }
+        KEEP.push([x, z, 34]);
+        disc("ahahub", "Trung tâm", "Ahamove Sky Hub", "", "Toà nhà cam – xanh bên sông Hàn với sân đỗ trực thăng giao hàng trên nóc. Thử đáp trực thăng Ahamove xuống chữ H!", x, y + H, z, 90);
+        LANDMARKS.hub = { x, y: y + H + 1.4, z };
+        // ground pads by the sea and in Hội An
+        const mx = coastX(-300) - 120, mz = -300;
+        helipad(mx, gy(mx, mz) + 0.1, mz, 9);
+        KEEP.push([mx, mz, 22]);
+        helipad(960, gy(960, 3330) + 0.1, 3330, 9);
+        KEEP.push([960, 3330, 22]);
+      }
+      /* Ahamove delivery helicopter (forward = −z) */
+      const ahaSide = () => ahaTex("#ffffff", AHA.orange, "ahamove", 512, 128);
+      function makeHeli(parcel = false) {
+        const g = new THREE.Group(), O = AHA.orange, B = AHA.blue;
+        mk(GEO.sph, O, 0, 0, -0.3, g, 0.06).scale.set(1.6, 1.45, 2.6);
+        mk(GEO.sph, "#9fd8f0", 0, 0.28, -2.0, g, 0.04).scale.set(1.25, 1.05, 1.3);
+        box(3.26, 0.4, 3.6, B, 0, -0.35, -0.2, g, 0.03);
+        box(0.55, 0.55, 5.6, O, 0, 0.35, 3.7, g, 0.04);
+        box(0.16, 1.9, 1.2, B, 0, 1.15, 6.2, g, 0.03);
+        box(2.2, 0.12, 0.8, B, 0, 0.45, 5.6, g, 0.03);
+        const tr = new THREE.Group();
+        tr.position.set(0.32, 1.1, 6.25);
+        g.add(tr);
+        box(0.06, 2.0, 0.24, "#2b2f3a", 0, 0, 0, tr, 0);
+        mk(GEO.cyl, "#2b2f3a", 0, 1.55, -0.3, g, 0.02).scale.set(0.35, 0.6, 0.35);
+        const rotor = new THREE.Group();
+        rotor.position.set(0, 1.95, -0.3);
+        g.add(rotor);
+        box(11.5, 0.08, 0.45, "#2b2f3a", 0, 0, 0, rotor, 0.02);
+        box(0.45, 0.08, 11.5, "#2b2f3a", 0, 0, 0, rotor, 0.02);
+        const disc = new THREE.Mesh(new THREE.CircleGeometry(5.8, 28).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.12, depthWrite: false }));
+        disc.position.y = 1.95;
+        disc.position.z = -0.3;
+        g.add(disc);
+        for (const s of [-1, 1]) {
+          box(0.16, 0.16, 4.6, "#2b2f3a", s * 1.25, -1.75, -0.3, g, 0.02);
+          for (const zz of [-1.5, 0.9]) box(0.1, 0.9, 0.1, "#2b2f3a", s * 1.05, -1.3, zz, g, 0);
+          const t = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 0.68), toon(0xffffff, { map: ahaSide() }));
+          t.position.set(s * 1.63, 0.15, -0.2);
+          t.rotation.y = s * Math.PI / 2;
+          g.add(t);
+        }
+        if (parcel) {
+          box(1.4, 1.1, 1.4, O, 0, -4.2, -0.3, g, 0.04);
+          box(1.45, 0.25, 0.3, B, 0, -3.8, -0.3, g, 0);
+          const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints([V3().set(0, -1.6, -0.3), V3().set(0, -3.6, -0.3)]), new THREE.LineBasicMaterial({ color: "#3a3848" }));
+          g.add(rope);
+        }
+        g.traverse((m) => (m.castShadow = true));
+        g.userData.rotor = rotor;
+        g.userData.tail = tr;
+        g.userData.disc = disc;
+        g.userData.tips = [V3().set(-5.6, 1.95, -0.3), V3().set(5.6, 1.95, -0.3)];
+        return g;
+      }
       function cityIcons() {
+        ahamoveHub();
         // Administration Centre ("corn cob") and riverside towers
         const ax = -250, az = -1150, ay = gy(ax, az);
         const t = mk(addONormal(new THREE.CylinderGeometry(8, 10, 66, 10)), bldMat, ax, ay + 33, az, scene, 0.06);
@@ -2095,10 +2199,23 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
               let w = lw - RR(4, 9), d = ld - RR(4, 9), h = RR(6, 13) + 10 * coreP * rand();
               if (tall) { h = RR(26, 64); w = Math.min(w, RR(14, 22)); d = Math.min(d, RR(12, 20)); }
               if (lw > 50 && !tall) h = RR(10, 18);
-              put("bld", x, y + h / 2, z, w, h, d, 0, pick(tall ? PALS.tall : PALS.city));
+              const wallC = pick(tall ? PALS.tall : PALS.city);
+              put("bld", x, y + h / 2, z, w, h, d, 0, wallC);
               colBox(x, z, w / 2, d / 2, 0, y - 2, y + h, "bld");
-              if (tall && rand() < 0.6) { put("bld", x, y + h + 2, z, w * 0.6, 4, d * 0.6, 0, "#f2f2ee"); colBox(x, z, w * 0.3, d * 0.3, 0, y, y + h + 4, "bld"); }
-              else if (!tall && rand() < 0.35) put("wall", x + RR(-w / 4, w / 4), y + h + 0.8, z + RR(-d / 4, d / 4), 2.4, 1.6, 2.4, 0, "#cfd2d8");
+              if (tall) {
+                // a coloured crown band and a set-back top, like a painted toy tower
+                const bandC = pick(PALS.band.filter((c) => c !== wallC));
+                put("wall", x, y + h - 1.2, z, w + 0.6, 2.4, d + 0.6, 0, bandC);
+                if (rand() < 0.6) { put("bld", x, y + h + 2, z, w * 0.6, 4, d * 0.6, 0, pick(PALS.band)); colBox(x, z, w * 0.3, d * 0.3, 0, y, y + h + 4, "bld"); }
+              } else if (h < 18 && rand() < 0.6) {
+                // pitched orange or blue roof, like the houses in Paper World
+                const rh = RR(2.4, 4.2);
+                put("roof", x, y + h, z, w * 1.04, rh, d * 1.04, rand() < 0.5 ? 0 : Math.PI / 2, pick(PALS.roofs));
+                colBox(x, z, w / 2, d / 2, 0, y, y + h + rh, "bld");
+              } else {
+                put("wall", x, y + h + 0.4, z, w + 0.4, 0.8, d + 0.4, 0, pick(PALS.band));
+                if (rand() < 0.4) put("wall", x + RR(-w / 4, w / 4), y + h + 1.4, z + RR(-d / 4, d / 4), 2.4, 1.6, 2.4, 0, "#cfd2d8");
+              }
             }
             if (rand() < 0.5) tree(cx + 33, cz + 33, RR(2.2, 3.2), PALS.forest);
           }
@@ -2174,6 +2291,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
             const x = xc + RR(-30, 30), zz = z + RR(-35, 35), y = gy(x, zz), w = RR(10, 18), d = RR(8, 14), h = RR(6, 15);
             if (S.karst > 0 || kept(x, zz)) continue;
             put("bld", x, y + h / 2, zz, w, h, d, 0, pick(PALS.city));
+            put("roof", x, y + h, zz, w * 1.04, RR(2.2, 3.4), d * 1.04, 0, pick(PALS.roofs));
             colBox(x, zz, w / 2, d / 2, 0, y - 1, y + h, "bld");
           }
           put("pool", xc + 40, gy(xc + 40, z) + 0.3, z, 14, 0.5, 8, 0, "#2fb3bf");
@@ -2338,6 +2456,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           colBox(cx, -2410, 6, 6, 0, 0, 28, "crane");
         }
         KEEP.push([200, -2360, 90]);
+        helipad(205, 2.7, -2395, 6.5);
         disc("cangtiensa", "Sơn Trà", "Cảng Tiên Sa", "仙沙", "Cảng nước sâu dưới chân Sơn Trà, nơi những con tàu du lịch khổng lồ cập bến đưa du khách vào Đà Nẵng.", 190, 20, -2362, 120);
       }
       /* red-shanked douc langurs — the "queen of primates" of Sơn Trà */
@@ -3129,14 +3248,79 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           scene.add(g);
           PILOTS.push({ g, T: T[k % T.length], y: RR(120, 260), ph: rand() * 6, r: RR(40, 70), pos: V3() });
         }
-        // parasail behind a speedboat
-        const boat = mk(GEOC.boat, "#ffffff", 0, 0, 0, scene, 0.04);
-        const sail = makeCanopy(["#e8562a", "#ffffff", "#2a9fd6", "#f2c230"]);
-        sail.scale.setScalar(0.8);
-        scene.add(sail);
-        const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints([V3(), V3()]), new THREE.LineBasicMaterial({ color: "#3a3848" }));
-        scene.add(rope);
-        PILOTS.para = { boat, sail, rope, s: 0, pos: V3() };
+        // parasailing: speedboats towing canopies up and down the Đà Nẵng beaches
+        const chutes = [
+          [AHA.orange, "#ffffff", AHA.blue], [AHA.blue, "#ffffff", AHA.orange], [AHA.orange, AHA.orange, "#ffffff"],
+          ["#e0418f", "#ffffff", "#f2c230"], ["#1f9a8a", "#f2c230", "#ffffff"], [AHA.orange, AHA.blue, "#ffffff", AHA.blue], ["#f2c230", "#e8562a", "#ffffff"], [AHA.blue, AHA.blue, "#ffffff"],
+        ];
+        const lanes = [[-1900, -700], [-1500, 200], [-1100, 400], [-800, 500], [-300, 650], [1200, 2300], [2900, 3500], [-1950, -900]];
+        lanes.forEach(([z0, z1], i) => {
+          const boat = makeSpeedboat(i % 3 === 2 ? AHA.blue : AHA.orange);
+          const sail = makeCanopy(chutes[i % chutes.length]);
+          sail.scale.setScalar(0.85);
+          scene.add(sail);
+          const rope = new THREE.Line(new THREE.BufferGeometry().setFromPoints([V3(), V3()]), new THREE.LineBasicMaterial({ color: "#3a3848" }));
+          scene.add(rope);
+          PARAS.push({ boat, sail, rope, z0, z1, off: RR(90, 240), sp: RR(9, 13), s: rand() * (z1 - z0) * 2, h: RR(26, 40), ph: rand() * 6, pos: V3(), bp: V3() });
+        });
+        // Ahamove delivery helicopters shuttling between the pads
+        const P = AHA.pads;
+        [[1, 2], [1, 3]].forEach(([a, b], i) => {
+          const g = makeHeli(true);
+          scene.add(g);
+          const p = P[a];
+          g.position.set(p.x, p.y + 1.9, p.z);
+          AIHELI.push({ g, route: [P[a], P[b]], i: 1, hold: 2 + i * 6, pos: g.position, vel: V3(), psi: 0 });
+        });
+      }
+      function makeSpeedboat(stripe) {
+        const g = new THREE.Group();
+        mk(hullGeo, "#fbfaf6", 0, 0.55, 0, g, 0.05).scale.set(2.4, 1.2, 8.5);
+        box(2.0, 0.25, 6.5, stripe, 0, 0.85, 0.5, g, 0.02);
+        box(1.9, 0.12, 4.4, "#1f5fbf", 0, 1.22, 1.3, g, 0);
+        const ws = box(1.8, 0.9, 0.12, "#9fd8f0", 0, 1.7, -0.6, g, 0.02);
+        ws.rotation.x = -0.4;
+        box(0.6, 1.0, 0.5, "#f2c230", 0, 1.8, 0.6, g, 0.02);
+        mk(GEO.sph, "#f0c8a0", 0, 2.5, 0.6, g, 0).scale.setScalar(0.3);
+        scene.add(g);
+        return g;
+      }
+      const PARAS = [], AIHELI = [];
+      function updateParas(dt, t) {
+        const cp = camera.position;
+        for (const P of PARAS) {
+          P.s += dt * P.sp;
+          const span = P.z1 - P.z0, u = P.s % (span * 2), dir = u < span ? 1 : -1, z = P.z0 + (u < span ? u : span * 2 - u), x = coastX(z) + P.off + Math.sin(t * 0.05 + P.ph) * 30;
+          P.boat.position.set(x, 0.1 + Math.sin(t * 3 + P.ph) * 0.08, z);
+          P.boat.rotation.set(-0.06, dir > 0 ? Math.PI : 0, Math.sin(t * 2 + P.ph) * 0.03);
+          P.bp.copy(P.boat.position);
+          P.pos.set(x + Math.sin(t * 0.4 + P.ph) * 4, P.h + Math.sin(t * 0.6 + P.ph) * 3, z - dir * 62);
+          P.sail.position.copy(P.pos);
+          P.sail.rotation.set(0, dir > 0 ? Math.PI : 0, Math.sin(t * 0.5 + P.ph) * 0.12);
+          const a = P.rope.geometry.attributes.position.array;
+          a.set([x, 1.6, z + dir * 3, P.pos.x, P.pos.y, P.pos.z]);
+          P.rope.geometry.attributes.position.needsUpdate = true;
+          if (Math.abs(x - cp.x) + Math.abs(z - cp.z) < 700 && rand() < 0.7)
+            emit(PB, _v2.set(x + RR(-1.2, 1.2), 0.3, z + dir * 4.5), _v3.set(RR(-2.5, 2.5), RR(1.5, 4), dir * RR(1, 4)), "#ffffff", RR(0.8, 1.4), -9, 1.2);
+        }
+        for (const H of AIHELI) {
+          const tgt = H.route[H.i], dx = tgt.x - H.pos.x, dz = tgt.z - H.pos.z, d = Math.hypot(dx, dz);
+          const ud = H.g.userData;
+          ud.rotor.rotation.y += dt * (H.hold > 0 ? 10 : 26);
+          ud.tail.rotation.x += dt * 40;
+          if (H.hold > 0) { H.hold -= dt; if (H.hold <= 0) H.i = (H.i + 1) % H.route.length; continue; }
+          const cruise = Math.max(95, gridH(H.pos.x, H.pos.z) + 70, tgt.y + 40);
+          const spd = d > 30 ? Math.min(34, d * 0.35 + 4) : 0;
+          H.vel.x = damp(H.vel.x, d > 1 ? (dx / d) * spd : 0, 1.2, dt);
+          H.vel.z = damp(H.vel.z, d > 1 ? (dz / d) * spd : 0, 1.2, dt);
+          const yT = d < 30 ? tgt.y + 1.9 : cruise;
+          H.vel.y = damp(H.vel.y, clamp((yT - H.pos.y) * 0.6, -7, 7), 1.5, dt);
+          H.pos.addScaledVector(H.vel, dt);
+          if (Math.hypot(H.vel.x, H.vel.z) > 2) H.psi += angDiff(Math.atan2(-H.vel.x, -H.vel.z), H.psi) * (1 - Math.exp(-1.5 * dt));
+          const sp = Math.hypot(H.vel.x, H.vel.z);
+          H.g.rotation.set(-clamp(sp / 34, 0, 1) * 0.22, H.psi, 0, "YXZ");
+          if (d < 4 && Math.abs(H.pos.y - (tgt.y + 1.9)) < 0.6) { H.hold = RR(5, 9); H.vel.set(0, 0, 0); }
+        }
       }
       function updatePilots(dt, t) {
         for (const p of PILOTS) {
@@ -3147,19 +3331,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           p.g.position.copy(p.pos);
           p.g.rotation.set(0, -a, 0.25, "YXZ");
         }
-        const P = PILOTS.para;
-        if (P) {
-          P.s += dt * 11;
-          const span = 2200, u = P.s % (span * 2), dir = u < span ? 1 : -1, z = -1700 + (u < span ? u : span * 2 - u), x = coastX(z) + 120;
-          P.boat.position.set(x, 0.2, z);
-          P.boat.rotation.y = dir > 0 ? Math.PI : 0;
-          P.pos.set(x - 10, 34 + Math.sin(t * 0.6) * 3, z - dir * 60);
-          P.sail.position.copy(P.pos);
-          P.sail.rotation.y = dir > 0 ? Math.PI / 2 : -Math.PI / 2;
-          const a = P.rope.geometry.attributes.position.array;
-          a.set([x, 1.5, z, P.pos.x, P.pos.y, P.pos.z]);
-          P.rope.geometry.attributes.position.needsUpdate = true;
-        }
+        updateParas(dt, t);
       }
       /* Dragon Bridge: LEDs at night, breathes fire, then water */
       function updateDragon(dt, t, pp) {
@@ -3326,6 +3498,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         plane: { id: "plane", name: "Máy bay giấy", icon: "✈", vb: 30, LD: 11, vs: 13.5, vmax: 105, bankMax: 1.2, rollRate: 2.8, nGain: 2.3, gMax: 5.5, boost: 13, eUse: 0.17, eGain: 0.07, yawK: 0.35, radius: 1.6, land: { vs: 4, v: 24 }, tricks: true, energy: "SỨC GIÓ" },
         glider: { id: "glider", name: "Dù lượn", icon: "🪂", vb: 10.5, LD: 8.5, vs: 7, vmax: 16, bankMax: 0.85, rollRate: 1.2, gMax: 2.4, radius: 4.5, land: { vs: 4.8, v: 14 }, glide: true, yawK: 0.2, energy: "THANH TỐC ĐỘ" },
         swift: { id: "swift", name: "Chim yến", icon: "🐦", vb: 21, LD: 10, vs: 8, vmax: 80, bankMax: 1.38, rollRate: 4.2, nGain: 3.2, gMax: 6.5, flapT: 8.5, eUse: 0.24, eGain: 0.1, yawK: 0.5, radius: 1.1, land: { vs: 4.5, v: 17 }, tricks: true, energy: "SỨC VỖ CÁNH" },
+        heli: { id: "heli", name: "Trực thăng Ahamove", icon: "🚁", vb: 30, LD: 6, vs: 0, vmax: 75, bankMax: 0.4, gMax: 2, yawK: 0, radius: 3.5, land: { vs: 5.5, v: 16 }, heli: true, energy: "CẦN GA" },
         seaplane: { id: "seaplane", name: "Thủy phi cơ", icon: "🛩", vb: 40, LD: 8, vs: 20, vmax: 90, bankMax: 1.05, rollRate: 1.5, nGain: 1.7, gMax: 3.8, thrust: 9, yawK: 0.25, radius: 4, land: { vs: 4.2, v: 36 }, water: true, tricks: true, energy: "GA" },
       };
       const SET = {
@@ -3335,7 +3508,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
       const F = {
         c: CRAFT.plane, pos: V3(), v: 30, psi: 0, gam: 0, phi: 0, n: 1, energy: 1, thr: 0.6, mode: "fly", vs: 0, agl: 50, ground: 0, overWater: false,
         stall: 0, warn: 0, trick: null, loopA: 0, crashT: 0, hist: [], histT: 0, skips: 0, skipT: 0, tricks: 0, flapK: 0, tuck: 0, prevY: 0,
-        g: new THREE.Group(), model: null, rollVis: 0, offVis: V3(), lift: 0, stillT: 0, crashes: 0,
+        g: new THREE.Group(), model: null, rollVis: 0, hv: V3(), vy: 0, landY: 0, offVis: V3(), lift: 0, stillT: 0, crashes: 0,
       };
       scene.add(F.g);
       const psiTo = (dx, dz) => Math.atan2(-dx, -dz);
@@ -3447,6 +3620,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         g.traverse((m) => (m.castShadow = true));
         MODELS.seaplane = g;
       }
+      MODELS.heli = makeHeli(true);
       for (const k in MODELS) { MODELS[k].visible = false; F.g.add(MODELS[k]); }
 
       /* wingtip trails (vertex alpha ribbons) */
@@ -3481,6 +3655,8 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         for (const k in MODELS) MODELS[k].visible = k === id;
         F.model = MODELS[id];
         if (F.mode === "fly" && was !== C) { F.v = clamp(F.v, C.vs * 1.15, C.vmax * 0.8); if (C.glide) F.v = C.vb; }
+        if (C.heli) { F.hv.copy(fwd(F.psi, 0, _v3)).multiplyScalar(Math.min(F.v, 40)); F.vy = 0; F.gam = 0; F.trick = null; }
+        if (was.heli && !C.heli && F.mode === "landed") { F.mode = "fly"; F.pos.y += 3; F.v = C.vb; F.gam = 0.2; }
         if (F.mode === "water" && !C.water) F.mode = "fly", (F.pos.y += 3), (F.gam = 0.2), (F.v = Math.max(C.vb, F.v));
         F.energy = 1;
         F.thr = 0.6;
@@ -3503,7 +3679,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         else { x = coastX(-650) + 50; z = -650; y = 48; psi = psiTo(-0.05, -1); }
         if (F.c.glide && where !== "sontra") y += 40;
         F.pos.set(x, y, z);
-        F.psi = psi; F.gam = 0; F.phi = 0; F.v = F.c.glide ? F.c.vb : F.c.vb * 1.05; F.mode = "fly"; F.energy = 1; F.trick = null;
+        F.psi = psi; F.gam = 0; F.phi = 0; F.v = F.c.glide ? F.c.vb : F.c.vb * 1.05; F.hv.set(0, 0, 0); F.vy = 0; F.mode = "fly"; F.energy = 1; F.trick = null;
         F.hist = [{ p: F.pos.clone(), psi, t: game.t }];
         F.prevY = y;
         if (F.model) { F.model.scale.setScalar(F.c.id === "swift" ? 1.15 : 1); F.model.rotation.set(0, 0, 0); }
@@ -3571,6 +3747,52 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           F.trick = { type: "roll", t: 0, dir: IN.roll < -0.2 ? -1 : 1 };
           sfx.whoosh();
         }
+      }
+      /* helicopter: hover by default · W/S forward/back · A/D turn · Q/E sidestep · SPACE climb · X descend · SHIFT fast */
+      function roofUnder(x, y, z) { const t = obstacleTop(x, z, 0); return y >= t - 1 ? t : -1e9; }
+      function heliStep(h, lift) {
+        const C = F.c, fIn = clamp(IN.pitch, -1, 1), turn = clamp(IN.roll, -1, 1), side = clamp(IN.yaw, -1, 1);
+        const spd = F.hv.length(), vmax = IN.boost ? C.vmax : 46;
+        F.psi -= turn * (1.6 - 0.7 * clamp(spd / 60, 0, 1)) * h;
+        const fx = -Math.sin(F.psi), fz = -Math.cos(F.psi), rx = Math.cos(F.psi), rz = -Math.sin(F.psi);
+        const k = 1 - Math.exp(-(fIn || side ? 1.1 : 0.8) * h);
+        F.hv.x += (fx * fIn * vmax + rx * side * 14 - F.hv.x) * k;
+        F.hv.z += (fz * fIn * vmax + rz * side * 14 - F.hv.z) * k;
+        let vyT = (IN.flap ? 11 : 0) - (IN.brake ? 9 : 0);
+        if (SET.assist && vyT < 0) {
+          // flare: slow the descent close to the ground or a roof
+          const below = F.pos.y - Math.max(heightAt(F.pos.x, F.pos.z), SEA_Y, roofUnder(F.pos.x, F.pos.y, F.pos.z));
+          vyT = Math.max(vyT, -1.2 - below * 0.35);
+        }
+        F.vy = damp(F.vy, vyT, 2.2, h);
+        F.pos.x += (F.hv.x + WIND.v.x * 0.35) * h;
+        F.pos.z += (F.hv.z + WIND.v.z * 0.35) * h;
+        F.pos.y += (F.vy + lift * 0.15) * h;
+        F.v = F.hv.length();
+        F.gam = damp(F.gam, -fIn * 0.28 * (IN.boost ? 1.3 : 1), 3, h);
+        F.phi = damp(F.phi, turn * 0.32 * clamp(F.v / 25, 0.3, 1) + side * 0.2, 3, h);
+        F.energy = clamp(0.5 + F.vy / 22, 0, 1);
+        F.n = 1; F.stall = 0;
+        // contact: ground, sea, or a flat roof
+        F.ground = heightAt(F.pos.x, F.pos.z);
+        F.overWater = F.ground < SEA_Y - 0.25;
+        const roof = roofUnder(F.pos.x, F.pos.y, F.pos.z), surf = Math.max(F.overWater ? SEA_Y : F.ground, roof), clear = 1.9;
+        F.agl = F.pos.y - surf;
+        if (F.agl < clear) {
+          if (F.overWater && roof < SEA_Y) return crash("Trực thăng rơi xuống biển!");
+          if (F.vy > -C.land.vs && F.v < C.land.v) {
+            F.mode = "landed"; F.landY = surf + clear; F.pos.y = F.landY; F.vy = 0; F.hv.set(0, 0, 0); F.v = 0; F.gam = 0; F.phi = 0;
+            sfx.thud(0.3);
+            burst(F.pos, "#e6d6a8", 16, 5, 2);
+            const pad = AHA.pads.find((p) => Math.hypot(p.x - F.pos.x, p.z - F.pos.z) < p.r + 1 && Math.abs(p.y - surf) < 2);
+            showTip("🚁 Hạ cánh", pad ? (pad.hub ? "Đáp đúng chữ H trên Ahamove Sky Hub!" : "Đáp xuống bãi trực thăng Ahamove") : roof > -1e8 && roof === surf ? "Đáp trên nóc nhà" : "Hạ cánh an toàn", "SPACE để cất cánh", 3000);
+            if (pad && pad.hub) CH.event("hubland");
+            return;
+          }
+          return crash(F.ground > 40 ? "Trực thăng đâm vào núi!" : "Trực thăng chạm đất quá mạnh!");
+        }
+        const hit = hitCollider(F.pos.x, F.pos.y, F.pos.z, 0.8) || hitCollider(F.pos.x + rx * 5, F.pos.y + 1.9, F.pos.z + rz * 5, 0.3) || hitCollider(F.pos.x - rx * 5, F.pos.y + 1.9, F.pos.z - rz * 5, 0.3) || hitCollider(F.pos.x + fx * 5, F.pos.y + 1.9, F.pos.z + fz * 5, 0.3);
+        if (hit) crash(hitMsg(hit.tag));
       }
       function flyStep(h, lift) {
         const C = F.c, assist = SET.assist;
@@ -3712,6 +3934,12 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         if (F.tricks >= 5) CH.event("tricks5");
       }
       function updateLanded(dt) {
+        if (F.c.heli) {
+          F.pos.y = F.landY;
+          F.psi -= IN.roll * dt * 0.9;
+          if (IN.flap || IN.boost > 0.5) { F.mode = "fly"; F.vy = 6; F.pos.y += 0.5; sfx.whoosh(); }
+          return;
+        }
         F.v = damp(F.v, 0, 2.2, dt);
         F.pos.addScaledVector(fwd(F.psi, 0, _v3), F.v * dt);
         const s = surfaceAt(F.pos.x, F.pos.z);
@@ -3767,8 +3995,8 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         else if (F.mode === "water") updateWater(dt);
         else {
           const steps = Math.ceil(dt / (1 / 90)), h = dt / steps;
-          for (let i = 0; i < steps && F.mode === "fly"; i++) flyStep(h, lift);
-          if (F.mode === "fly") {
+          for (let i = 0; i < steps && F.mode === "fly"; i++) (C.heli ? heliStep : flyStep)(h, lift);
+          if (F.mode === "fly" && !C.heli) {
             F.phi += sn(t * 2.3, 7.7) * turb * 0.03;
             F.gam += sn(t * 2.9, 3.1) * turb * 0.006;
           }
@@ -3778,7 +4006,8 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         if (F.mode === "fly") {
           for (const J of JETS) if (J.g.visible && J.pos.distanceTo(F.pos) < 12) crash("Suýt nữa thì… va phải máy bay!");
           for (const p of PILOTS) if (p.pos.distanceTo(F.pos) < 6) crash("Va vào một phi công dù lượn!");
-          if (PILOTS.para && PILOTS.para.pos.distanceTo(F.pos) < 6) crash("Mắc vào dù kéo!");
+          for (const P of PARAS) { if (P.pos.distanceTo(F.pos) < 6) crash("Mắc vào dù kéo của cano!"); else if (P.bp.distanceTo(F.pos) < 5) crash("Va vào cano kéo dù!"); }
+          for (const H of AIHELI) if (H.pos.distanceTo(F.pos) < 7) crash("Va vào trực thăng Ahamove!");
           for (const c of CABLE.cars) if (c.g.position.distanceTo(F.pos) < 4) crash("Va cabin cáp treo!");
         }
         // terrain look-ahead warning
@@ -3786,7 +4015,8 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         F.warn = 0;
         if (F.mode === "fly" && F.v > 6) {
           for (const s of [1, 2, 3]) {
-            const px = F.pos.x + (_f.x * F.v + WIND.v.x) * s * 0.8, pz = F.pos.z + (_f.z * F.v + WIND.v.z) * s * 0.8, py = F.pos.y + (_f.y * F.v + lift) * s * 0.8;
+            const vx = C.heli ? F.hv.x : _f.x * F.v, vz = C.heli ? F.hv.z : _f.z * F.v, vy = C.heli ? F.vy : _f.y * F.v + lift;
+            const px = F.pos.x + (vx + WIND.v.x) * s * 0.8, pz = F.pos.z + (vz + WIND.v.z) * s * 0.8, py = F.pos.y + vy * s * 0.8;
             const gh = Math.max(gridH(px, pz), SEA_Y);
             if (py < gh + 4 && gh > SEA_Y + 1) { F.warn = Math.max(F.warn, 4 - s); }
           }
@@ -3837,13 +4067,18 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
             w.inner.rotation.y = -w.s * (0.25 + F.tuck * 0.9);
           }
         }
+        if (C.heli) {
+          ud.rotor.rotation.y += dt * (F.mode === "landed" ? 9 : 26);
+          ud.tail.rotation.x += dt * 40;
+          ud.disc.material.opacity = F.mode === "landed" ? 0.06 : 0.14;
+        }
         if (C.id === "seaplane") {
           ud.prop.rotation.z += dt * (8 + F.thr * 60);
           ud.disc.material.opacity = 0.15 + F.thr * 0.25;
         }
         // trails: paper streamers + white vortices when pulling G
         const boosting = (C.id === "plane" && IN.boost > 0.05 && F.energy > 0.01) || (C.id === "swift" && F.flapK);
-        const a = clamp((F.n - 1.6) * 0.35 + (boosting ? 0.45 : 0) + (F.trick ? 0.5 : 0), 0, 0.85) * (C.glide ? 0 : 1);
+        const a = clamp((F.n - 1.6) * 0.35 + (boosting ? 0.45 : 0) + (F.trick ? 0.5 : 0), 0, 0.85) * (C.glide || C.heli ? 0 : 1);
         F.g.updateMatrixWorld();
         for (let i = 0; i < 2; i++) {
           _tip.copy(ud.tips[i]).applyMatrix4(F.g.matrixWorld);
@@ -3852,7 +4087,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         // blob shadow
         const s = surfaceAt(F.pos.x, F.pos.z), agl = F.pos.y - s;
         blob.position.set(F.pos.x, s + 0.15, F.pos.z);
-        const bs = (C.glide ? 4 : C.id === "seaplane" ? 4.5 : 2) * (1 + agl * 0.01);
+        const bs = (C.glide ? 4 : C.id === "seaplane" || C.heli ? 4.5 : 2) * (1 + agl * 0.01);
         blob.scale.set(bs, 1, bs);
         blob.material.opacity = 0.32 * smooth(90, 2, agl) * (1 - env.glow * 0.6);
         blob.visible = agl < 90;
@@ -3908,7 +4143,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         };
         def("cau", "🌉", "Luồn gầm cầu sông Hàn", "Từ vịnh bay ngược sông Hàn, chui gầm Thuận Phước, Sông Hàn, Cầu Rồng, Trần Thị Lý rồi vút lên Vòng quay Mặt Trời.", [
           [hx(-2120), 26, -2120, 12], [hx(-1960), 16, -1960, 10], under("Cầu Thuận Phước", 11, 7), [hx(-1630), 8, -1630, 8], under("Cầu Sông Hàn"), [hx(-1200), 7, -1200, 8],
-          under("Cầu Rồng"), [hx(-860), 7, -860, 8], under("Cầu Trần Thị Lý"), [hx(-520), 14, -520, 9], [L.sunwheel.x + 30, L.sunwheel.y + 4, L.sunwheel.z - 40, 11], [L.sunwheel.x, L.sunwheel.y + 36, L.sunwheel.z + 10, 12],
+          under("Cầu Rồng"), [hx(-860), 7, -860, 8], under("Cầu Trần Thị Lý"), [hx(-520), 24, -520, 9], [L.sunwheel.x + 34, L.sunwheel.y + 4, L.sunwheel.z - 45, 11, 0], [L.sunwheel.x - 10, L.sunwheel.y + 40, L.sunwheel.z + 95, 13, 0],
         ].map((r) => (r.length === 4 ? [...r, 1] : r)), { v: 27 });
         def("sontra", "⛰", "Vòng quanh bán đảo Sơn Trà", "Chào Mẹ Quan Âm, men theo bờ đá tới hải đăng, vượt đỉnh radar, ghé Bàn Cờ và cây đa ngàn năm.", [
           [coastX(-1950) + 70, 40, -1950, 14], [L.buddha.x + 40, L.buddha.y + 30, L.buddha.z + 50, 14], [1720, 32, -2330, 14], [2150, 40, -2520, 14], [2440, 34, -2700, 14], [2180, 46, -2930, 14],
@@ -4067,6 +4302,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
           { id: "nests", icon: "🪺", name: "Săn tổ yến", desc: "Thu thập cả 12 tổ yến vàng giấu trên vách đá." },
           { id: "gold", icon: "🥇", name: "Huy chương vàng", desc: "Đạt huy chương vàng ở bất kỳ tuyến bay nào." },
           { id: "glider", icon: "🪂", name: "Dù lượn Sơn Trà", desc: "Với dù lượn, giữ độ cao trên 600 m suốt 60 giây nhờ gió sườn núi." },
+          { id: "hubland", icon: "🚁", name: "Giao hàng trên mây", desc: "Đáp trực thăng Ahamove đúng chữ H trên nóc Ahamove Sky Hub bên sông Hàn." },
           { id: "allzones", icon: "🧭", name: "Một vòng Đà Nẵng – Hội An", desc: "Ghé đủ 4 vùng: Biển, Sơn Trà, Ngũ Hành Sơn và Hội An." },
         ],
         st: { under: new Set(), budAng: 0, budPrev: null, skimT: 0, thermStart: null, gliderT: 0, zones: new Set() },
@@ -4197,7 +4433,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         const flap = !!keys[" "] || PAD.a;
         IN.flapPressed = flap && !IN.flap;
         IN.flap = flap;
-        IN.trickPressed = IN.flapPressed && F.c.id !== "swift" && F.mode === "fly";
+        IN.trickPressed = IN.flapPressed && F.c.id !== "swift" && !F.c.heli && F.mode === "fly";
         if (F.c.id === "swift" && IN.flapPressed && Math.abs(IN.roll) > 0.6 && F.mode === "fly") IN.trickPressed = true;
       }
       function readPad() {
@@ -4220,7 +4456,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright", "tab"].includes(k)) e.preventDefault();
         if (!game.started) { if (k === "enter") start(); return; }
         if (k === "escape") { if (game.panel) closePanels(); else if (ROUTE.active) endRoute("Đã bỏ tuyến bay"); return; }
-        if ("1234".includes(k) && k.length === 1) setCraft(["plane", "glider", "swift", "seaplane"][+k - 1]);
+        if ("12345".includes(k) && k.length === 1) setCraft(["plane", "glider", "swift", "seaplane", "heli"][+k - 1]);
         if (k === "c") cycleCam();
         if (k === "m") togglePanel("pMap");
         if (k === "l") togglePanel("pRoutes");
@@ -4330,7 +4566,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         const C = F.c, p = F.g.position, z = game.zoom * (IS_TOUCH ? 0.85 : 1);
         if (!game.dragging) { game.dragYaw = damp(game.dragYaw, 0, 1.4, dt); game.dragPitch = damp(game.dragPitch, 0, 1.4, dt); }
         fwd(F.psi, F.gam, _cf);
-        const big = C.glide ? 2.1 : C.id === "seaplane" ? 1.7 : 1;
+        const big = C.glide ? 2.1 : C.id === "seaplane" ? 1.7 : C.heli ? 1.6 : 1;
         let fov = 66 + clamp((F.v - C.vb) / C.vb, -0.3, 1.5) * 9 + (IN.boost > 0.05 && F.energy > 0.02 && C.id !== "glider" ? 6 : 0);
         let roll = 0;
         const mode = game.started ? game.camMode : -1;
@@ -4472,7 +4708,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         hudT = 0;
         const C = F.c;
         $("spd").textContent = String(Math.round(F.v * 3.6)).padStart(3, "0");
-        $("spdSub").textContent = F.mode === "landed" ? "ĐÃ ĐÁP" : F.mode === "water" ? "TRÊN MẶT NƯỚC" : F.stall ? "THẤT TỐC" : `G ${F.n.toFixed(1)}`;
+        $("spdSub").textContent = F.mode === "landed" ? "ĐÃ ĐÁP" : F.mode === "water" ? "TRÊN MẶT NƯỚC" : F.stall ? "THẤT TỐC" : C.heli ? (F.v < 3 ? "TREO" : "TRỰC THĂNG") : `G ${F.n.toFixed(1)}`;
         $("alt").textContent = String(Math.max(0, Math.round(F.pos.y * 3))).padStart(3, "0");
         const vs = F.vs * 3;
         $("vs").textContent = (vs >= 0 ? "+" : "−") + Math.abs(vs).toFixed(1) + " m/s";
@@ -4497,7 +4733,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         let lt = "";
         if (F.mode === "fly" && F.liftSm > 1.2) lt = LIFT.ridge > LIFT.therm ? "↑ GIÓ SƯỜN NÚI ĐANG NÂNG CÁNH" : "↑ CỘT KHÍ NÓNG · LƯỢN VÒNG ĐỂ LÊN CAO";
         else if (LIFT.inCloud > 0.2) lt = "☁ TRONG MÂY";
-        else if (F.mode === "landed") lt = "SPACE / W ĐỂ CẤT CÁNH";
+        else if (F.mode === "landed") lt = C.heli ? "SPACE ĐỂ CẤT CÁNH" : "SPACE / W ĐỂ CẤT CÁNH";
         if (le.textContent !== lt) le.textContent = lt;
         le.classList.toggle("show", !!lt);
         sfx.warn(!!w && F.warn >= 2);
@@ -4793,6 +5029,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         const lfo = C.createOscillator(), lg = C.createGain();
         lfo.frequency.value = 19; lg.gain.value = 0;
         lfo.connect(lg).connect(A.flut.g.gain); lfo.start();
+        A.lfo = lfo;
         A.flutLfo = lg;
         // seaplane engine
         A.eng = C.createGain(); A.eng.gain.value = 0;
@@ -4937,8 +5174,10 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         A.wind.f.frequency.setTargetAtTime(300 + v * 18, t, 0.1);
         A.wind.g.gain.setTargetAtTime(flying ? clamp(0.02 + v * 0.0028, 0, 0.32) * (game.camMode === 2 ? 1.4 : 1) : 0.01, t, 0.15);
         A.hiss.g.gain.setTargetAtTime(flying ? clamp((v - 35) * 0.002, 0, 0.12) : 0, t, 0.15);
-        A.flutLfo.gain.setTargetAtTime(flying && C.id === "plane" ? clamp((v - 25) * 0.003, 0, 0.12) : 0, t, 0.1);
-        A.eng.gain.setTargetAtTime(flying && C.id === "seaplane" ? 0.04 + F.thr * 0.07 : 0, t, 0.15);
+        A.flutLfo.gain.setTargetAtTime(flying && C.id === "plane" ? clamp((v - 25) * 0.003, 0, 0.12) : flying && C.heli ? (F.mode === "landed" ? 0.08 : 0.2) : 0, t, 0.1);
+        A.lfo.frequency.setTargetAtTime(C.heli ? (F.mode === "landed" ? 7 : 11 + F.vy * 0.15) : 19, t, 0.2);
+        A.flut.f.frequency.setTargetAtTime(C.heli ? 380 : 1300, t, 0.2);
+        A.eng.gain.setTargetAtTime(flying && C.id === "seaplane" ? 0.04 + F.thr * 0.07 : flying && C.heli ? 0.035 + F.energy * 0.03 : 0, t, 0.15);
         A.engO.forEach((o, i) => o.frequency.setTargetAtTime(55 + F.thr * 70 + i * 1.6, t, 0.2));
         // surf near the shore, low down
         sample(camera.position.x, camera.position.z);
@@ -5232,7 +5471,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         buildInstances();
         setupThermals(); setupCars(); setupJets(); setupBirds(); setupPilots(); setupHoaDang(); setupSpinners(); setupNests(); setupHalos();
         defineRoutes();
-        collectStatics(new Set([F.g, sky, sea, blob, rainMesh, ...ranges, ...JETS.map((j) => j.g), ...PILOTS.map((p) => p.g), ...CABLE.cars.map((c) => c.g), ...(PILOTS.para ? [PILOTS.para.boat, PILOTS.para.sail, PILOTS.para.rope] : []), ...CLOUDS.map((c) => c.g)]));
+        collectStatics(new Set([F.g, sky, sea, blob, rainMesh, ...ranges, ...JETS.map((j) => j.g), ...PILOTS.map((p) => p.g), ...CABLE.cars.map((c) => c.g), ...PARAS.flatMap((P) => [P.boat, P.sail, P.rope]), ...AIHELI.map((H) => H.g), ...CLOUDS.map((c) => c.g)]));
         paintMap();
         for (const d of DISC) if (SAVE.disc.includes(d.id)) d.got = true;
         for (const n of NESTS) if (SAVE.nests.includes(n.name)) { n.got = true; if (n.g) n.g.visible = false; }
@@ -5247,7 +5486,7 @@ float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.03+ve
         READY = true;
         $("go").disabled = false;
         $("go").innerHTML = "CẤT CÁNH <span>↗</span>";
-        window.__dn = { hitCollider, cellGroups, STATICS, updateFlight, airLift, updateChallenges, updateRoute, post, FOGU, terrainMat, F, game, keys, IN, LIFT, WIND, ENV, CRAFT, SET, ROUTES, ROUTE, DISC, NESTS, CH, LANDMARKS, BRIDGES, THERMALS, spawnAt, setCraft, startRoute, start, sample, heightAt, gridH, camera, scene, renderer, tiles, colliders };
+        window.__dn = { PARAS, AIHELI, AHA, hitCollider, cellGroups, STATICS, updateFlight, airLift, updateChallenges, updateRoute, post, FOGU, terrainMat, F, game, keys, IN, LIFT, WIND, ENV, CRAFT, SET, ROUTES, ROUTE, DISC, NESTS, CH, LANDMARKS, BRIDGES, THERMALS, spawnAt, setCraft, startRoute, start, sample, heightAt, gridH, camera, scene, renderer, tiles, colliders };
       }
       requestAnimationFrame(frame);
       init().catch((e) => { console.error(e); $("loading").textContent = "Lỗi khi dựng thế giới: " + e.message; });
