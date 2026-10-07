@@ -13,6 +13,12 @@ as sheet music.
 peninsula, the Marble Mountains and Hội An old town. Four kinds of wings, thermals and ridge lift, ring routes
 and a travel journal. See [danang/README.md](danang/README.md).
 
+**New — [Phi Đội Giấy · Đà Nẵng](phidoi/):** a 3D paper dogfight over the same hand-built Đà Nẵng map. Fly a paper
+jet, a seaplane or an Ahamove helicopter against the Black Ink Gang's ink kites, carbon-paper fighters and ink bombers,
+defend the Dragon Bridge, Sơn Trà, the Marble Mountains and Hội An, and bring down the Giant Squid airship. Six
+missions, survival and a practice range, guns with lead aiming, lock-on missiles, flares and Ahamove supply drops.
+See [phidoi/README.md](phidoi/README.md).
+
 ## Features
 
 - **Endless world** streamed in chunks: towns, meadows, forests, cherry groves, lakes and snow-capped mountains

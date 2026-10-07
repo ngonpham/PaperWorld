@@ -1,0 +1,17 @@
+{
+  "name": "Phi Đội Giấy · Đà Nẵng",
+  "short_name": "Phi Đội Giấy",
+  "description": "Game không chiến máy bay giấy 3D trên bầu trời Đà Nẵng: bảo vệ Cầu Rồng, Sơn Trà, Ngũ Hành Sơn và Hội An.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#f4efe2",
+  "theme_color": "#f4efe2",
+  "categories": ["games"],
+  "icons": [
+    { "src": "../icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "../icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
