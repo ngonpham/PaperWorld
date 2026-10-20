@@ -835,6 +835,12 @@ open class World(val plat: Platform2D, val Q: Quality) {
     /* ---------- registries filled by World+SonTra.kt / World+Coast.kt ---------- */
 
     /* ---------- registries filled by World+South.kt ---------- */
+    /** Hội An lantern strings across the streets: [x0, y0, z0, x1, y1, z1] */
+    val LANTERN_LINES = ArrayList<DoubleArray>()
+    /** Bà Nà cable car: cabins run between the stations a → b (animated by the game loop) */
+    class CableCar(val g: Group, var t: Double, val lane: Int)
+    class Cable { val cars = ArrayList<CableCar>(); val a = Vec3(); val b = Vec3() }
+    val CABLE = Cable()
 
     /* ---------- (end of builder registries) ---------- */
 
