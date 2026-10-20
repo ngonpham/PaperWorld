@@ -84,6 +84,8 @@ interface AudioApi {
     fun init()
     fun radioSet(on: Boolean)
     fun nextSong()
+    /** switch the radio to song [i] from its start, without the song toast (web startMission: A.song = M.song; A.bar = 0; A.step = 0) */
+    fun setSong(i: Int) {}
     /** per frame, game thread */
     fun update(dt: Double, f: AudioFrame)
     fun pause(paused: Boolean) {}

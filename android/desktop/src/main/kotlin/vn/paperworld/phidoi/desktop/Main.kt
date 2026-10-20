@@ -113,7 +113,10 @@ fun gameTest() {
     val w = System.getProperty("w", "960").toInt(); val h = System.getProperty("h", "540").toInt()
     val ctx = Headless(w, h)
     val gl = LwjglGL()
-    val host = GameHost(AwtPlatform, MemStore().also { it.put("quality", System.getProperty("q", "2")) }, NullAudio(), object : HostEvents {}, touch = System.getProperty("touch", "true").toBoolean(), density = 1.0)
+    // -Dpd.density=2.6: the HUD is laid out in w/density × h/density dp (a phone: -Dpd.w=2400 -Dpd.h=1080 -Dpd.density=2.6)
+    val density = System.getProperty("density", "1.0").toDouble()
+    val store = MemStore().also { it.put("quality", System.getProperty("q", "2")); if (System.getProperty("unlock", "false").toBoolean()) it.put("unlockAll", true) }
+    val host = GameHost(AwtPlatform, store, NullAudio(), object : HostEvents {}, touch = System.getProperty("touch", "true").toBoolean(), density = density)
     host.onSurfaceCreated(gl)
     host.onSurfaceChanged(w, h)
     val hudImg = java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB)
@@ -143,8 +146,15 @@ fun gameTest() {
     ImageIO.write(img, "png", File(out))
     println("wrote $out")
 }
+/** draw the HUD once (to record its tap regions) and tap at (x, y) dp */
+fun tapAt(g: Game, x: Double, y: Double) {
+    val w = System.getProperty("w", "960").toDouble(); val h = System.getProperty("h", "540").toDouble(); val d = System.getProperty("density", "1.0").toDouble()
+    g.drawUi(RecordingCanvas(AwtPlatform), w / d, h / d, d, 0.0)
+    g.pointer(0, 99, x, y); g.pointer(2, 99, x, y)
+}
 /**
  * tiny command language for tests: start | key:shift | unkey:shift | hour:20 | craft:heli | cam:2 | spawn:x,y,z,psi
+ * ui: panel:pMap | pause | win | fail | tap:x,y (dp) | unlock
  * combat: mission:m1 | fire | unfire | missile | flare | target | enemy:fighter[,dist[,dy]] | boss[:dist] | sim:sec (no render) | menu | diff:0..2 | delivery | pickup:kind | inv
  */
 fun runCmd(g: Game, cmd: String) {
@@ -176,6 +186,12 @@ fun runCmd(g: Game, cmd: String) {
             val f = fwd(g.F.psi, 0.0)
             g.spawnEnemy("boss", g.F.pos.x + f.x * d, g.F.pos.y, g.F.pos.z + f.z * d, psi = g.F.psi + PI / 2)
         }
+        "lock" -> { val e = g.EN.filter { it.alive && !it.demo }.minByOrNull { it.pos.distanceTo(g.F.pos) }; g.PL.target = e; g.PL.manualT = g.game.t; g.PL.lock = v.toDoubleOrNull() ?: 1.0 }
+        "panel" -> g.togglePanel(v)
+        "pause" -> g.togglePause(true)
+        "win" -> { g.MS.state = "fight"; g.winMission() }
+        "fail" -> g.failMission(v.ifEmpty { "Thử thất bại" })
+        "tap" -> { val a = v.split(",").map { it.toDouble() }; tapAt(g, a[0], a[1]) }
         "delivery" -> g.startDelivery()
         "pickup" -> { val f = fwd(g.F.psi, 0.0); g.spawnPickup(v.ifEmpty { "repair" }, g.F.pos.x + f.x * 40, g.F.pos.y + 4, g.F.pos.z + f.z * 40) }
         "inv" -> g.PL.inv = 1e9

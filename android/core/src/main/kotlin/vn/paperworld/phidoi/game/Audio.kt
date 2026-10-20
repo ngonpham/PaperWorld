@@ -226,6 +226,12 @@ class Audio(private val outFactory: () -> PcmOut?) : AudioApi {
         post { it.nextSongA() }
     }
 
+    override fun setSong(i: Int) {
+        if (!ready || i !in SONGS.indices || song == i) return
+        song = i; bar = 0
+        post { it.setSongA(i) }
+    }
+
     private fun distGain(p: Vec3?) = if (p == null) 1.0 else clamp(1 - frame.cam.distanceTo(p) / 900, 0.0, 1.0)
 
     override fun update(dt: Double, f: AudioFrame) {
@@ -918,6 +924,8 @@ class Audio(private val outFactory: () -> PcmOut?) : AudioApi {
                 if (step % 16 == 0) { bar++; if (bar >= sd.form.size * 4) nextSongA() }
             }
         }
+
+        fun setSongA(i: Int) { song = i; bar = 0; step = 0 }
 
         fun nextSongA() {
             song = (song + 1) % SONGS.size; bar = 0; step = 0

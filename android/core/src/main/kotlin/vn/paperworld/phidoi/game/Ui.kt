@@ -35,6 +35,15 @@ class UiState {
     var warn = ""; var lift = ""
     var settingsScroll = 0.0
     var studio = false
+    /** wall-clock seconds (CSS animations keep running while the game is paused) */
+    var clock = 0.0
+    /** the transform + clip applied to hit regions recorded by [hit] (cards drawn scaled) */
+    var hitTx = 0.0; var hitTy = 0.0; var hitK = 1.0; var hitClip: DoubleArray? = null
+    /** HUD cards, maps, menu (Hud.kt, Maps.kt, Menu.kt) */
+    val hud = HudState()
+    var mapImg: Image2D? = null
+    var introScroll = 0.0; var dragY = Double.NaN
+    var everStarted = false; var radioPrimed = false
 }
 
 /* ---------- drawing helpers ---------- */
@@ -69,6 +78,19 @@ fun Canvas2D.text(t: String, x: Double, y: Double, face: Face, size: Double, col
     setTextAlign(Align.LEFT)
     for (ch in t) { val s = ch.toString(); fillText(s, px.toFloat(), y.toFloat()); px += measureText(s) + size * spacing }
 }
+/** [text] with a stroked halo behind it (the web's text-shadow / strokeText halos), letter-spacing aware */
+fun Canvas2D.haloText(t: String, x: Double, y: Double, face: Face, size: Double, col: Int, halo: Int, haloW: Double, align: Int = Align.CENTER, spacing: Double = 0.0) {
+    setFont(face, size.toFloat()); setTextBaseline(Baseline.MIDDLE); setStroke(halo); setLineWidth(haloW.toFloat())
+    if (spacing == 0.0) { setTextAlign(align); strokeText(t, x.toFloat(), y.toFloat()) }
+    else {
+        var w = 0.0; for (ch in t) w += measureText(ch.toString()) + size * spacing
+        w -= size * spacing
+        var px = when (align) { Align.CENTER -> x - w / 2; Align.RIGHT -> x - w; else -> x }
+        setTextAlign(Align.LEFT)
+        for (ch in t) { val s = ch.toString(); strokeText(s, px.toFloat(), y.toFloat()); px += measureText(s) + size * spacing }
+    }
+    text(t, x, y, face, size, col, align, Baseline.MIDDLE, spacing)
+}
 fun Canvas2D.textW(t: String, face: Face, size: Double, spacing: Double = 0.0): Double { setFont(face, size.toFloat()); var w = measureText(t).toDouble(); if (spacing != 0.0) w += size * spacing * (t.length - 1); return w }
 /** word-wrapped paragraph; returns the height used */
 fun Canvas2D.para(t: String, x: Double, y: Double, maxW: Double, face: Face, size: Double, lh: Double, col: Int = Pal.ink, align: Int = Align.LEFT, draw: Boolean = true): Double {
@@ -83,16 +105,41 @@ fun Canvas2D.para(t: String, x: Double, y: Double, maxW: Double, face: Face, siz
     if (draw) for ((i, l) in lines.withIndex()) text(l, x, y + i * size * lh, face, size, col, align, Baseline.TOP)
     return lines.size * size * lh
 }
-fun Canvas2D.bar(x: Double, y: Double, w: Double, h: Double, k: Double, stops: FloatArray, cols: IntArray) {
+/** a web .bar: white track, the fill (its gradient spans the filled part, like the CSS <i>), ink border; [fillA] = opacity of the fill */
+fun Canvas2D.bar(x: Double, y: Double, w: Double, h: Double, k: Double, stops: FloatArray, cols: IntArray, border: Double = 1.5, fillA: Double = 1.0) {
     setFill(Pal.white); rrect(x, y, w, h, 3.0); fill()
-    save(); rrect(x, y, w, h, 3.0); clip()
-    if (k > 0) { if (cols.size == 1) setFill(cols[0]) else setFillLinear(x.toFloat(), 0f, (x + w).toFloat(), 0f, stops, cols); fillRect(x.toFloat(), y.toFloat(), (w * clamp(k, 0.0, 1.0)).toFloat(), h.toFloat()) }
-    restore()
-    setStroke(Pal.ink); setLineWidth(1.5f); rrect(x, y, w, h, 3.0); stroke()
+    val fw = w * clamp(k, 0.0, 1.0)
+    if (fw > 0) {
+        save(); rrect(x, y, w, h, 3.0); clip()
+        if (fillA < 1) setAlpha(fillA.toFloat())
+        if (cols.size == 1) setFill(cols[0]) else setFillLinear(x.toFloat(), 0f, (x + fw).toFloat(), 0f, stops, cols)
+        fillRect(x.toFloat(), y.toFloat(), fw.toFloat(), h.toFloat())
+        restore()
+    }
+    setStroke(Pal.ink); setLineWidth(border.toFloat()); rrect(x, y, w, h, 3.0); stroke()
 }
 
 /* ---------- hit regions ---------- */
-fun Game.hit(x: Double, y: Double, w: Double, h: Double, round: Boolean = false, onUp: (() -> Unit)? = null, onMove: ((Double, Double) -> Unit)? = null, onDown: () -> Unit) { ui.next.add(Hit(x, y, w, h, round, onDown, onUp, onMove)) }
+fun Game.hit(x: Double, y: Double, w: Double, h: Double, round: Boolean = false, onUp: (() -> Unit)? = null, onMove: ((Double, Double) -> Unit)? = null, onDown: () -> Unit) {
+    val k = ui.hitK
+    var X = x * k + ui.hitTx; var Y = y * k + ui.hitTy; var W = w * k; var H = h * k
+    val cl = ui.hitClip
+    if (cl != null && !round) {
+        val x1 = min(X + W, cl[0] + cl[2]); val y1 = min(Y + H, cl[1] + cl[3])
+        X = max(X, cl[0]); Y = max(Y, cl[1]); W = x1 - X; H = y1 - Y
+        if (W <= 0 || H <= 0) return
+    }
+    ui.next.add(Hit(X, Y, W, H, round, onDown, onUp, onMove))
+}
+/** draw [block] translated + scaled, with the hit regions it records mapped the same way */
+inline fun Game.scaled(c: Canvas2D, tx: Double, ty: Double, k: Double, block: () -> Unit) {
+    val otx = ui.hitTx; val oty = ui.hitTy; val ok = ui.hitK
+    c.save(); c.translate(tx.toFloat(), ty.toFloat()); if (k != 1.0) c.scale(k.toFloat(), k.toFloat())
+    ui.hitTx = otx + tx * ok; ui.hitTy = oty + ty * ok; ui.hitK = ok * k
+    block()
+    c.restore()
+    ui.hitTx = otx; ui.hitTy = oty; ui.hitK = ok
+}
 /** a web .btn: returns its width */
 fun Game.button(c: Canvas2D, label: String, x: Double, y: Double, w0: Double = 0.0, on: Boolean = false, red: Boolean = false, size: Double = 9.5, action: () -> Unit): Double {
     val tw = c.textW(label.uppercase(), Face.UI700, size, 0.12)
@@ -108,7 +155,9 @@ fun Game.button(c: Canvas2D, label: String, x: Double, y: Double, w0: Double = 0
    ========================================================= */
 fun Game.drawUi(c: Canvas2D, w: Double, h: Double, density: Double, dt: Double) {
     ui.w = w; ui.h = h
+    ui.clock += dt
     ui.next = ArrayList()
+    ui.hitTx = 0.0; ui.hitTy = 0.0; ui.hitK = 1.0; ui.hitClip = null
     c.save()
     c.scale(density.toFloat(), density.toFloat())
     if (game.started) {
@@ -123,8 +172,8 @@ fun Game.drawUi(c: Canvas2D, w: Double, h: Double, density: Double, dt: Double) 
         drawMessages(c, w, h)
         drawPanels(c, w, h)
     } else {
-        drawMessages(c, w, h)
         drawIntro(c, w, h)
+        drawMessages(c, w, h)
     }
     if (h > w && isTouch) drawRotate(c, w, h)
     c.restore()
@@ -346,16 +395,13 @@ fun Game.drawMessages(c: Canvas2D, w: Double, h: Double) {
     }
 }
 fun Game.drawWarnings(c: Canvas2D, w: Double, h: Double) {
-    if (ui.warn.isNotEmpty() && (game.t * 4).toInt() % 2 == 0) {
-        c.setStroke(Pal.white); c.setLineWidth(4f); c.setFont(Face.UI800, 15f); c.setTextAlign(Align.CENTER); c.setTextBaseline(Baseline.MIDDLE)
-        c.strokeText(ui.warn, (w / 2).toFloat(), (h * 0.34).toFloat())
-        c.text(ui.warn, w / 2, h * 0.34, Face.UI800, 15.0, Pal.red, Align.CENTER, spacing = 0.25)
+    if (ui.warn.isNotEmpty()) {
+        // #warn.show: animation blink 0.5s steps(2) — full, then 35 %
+        c.save(); c.setAlpha(blinkA(0.5).toFloat())
+        c.haloText(ui.warn, w / 2, h * 0.34, Face.UI800, 15.0, Pal.red, Pal.white, 4.0, spacing = 0.25)
+        c.restore()
     }
-    if (ui.lift.isNotEmpty()) {
-        c.setStroke(Pal.white); c.setLineWidth(3f); c.setFont(Face.UI700, 10f); c.setTextAlign(Align.CENTER); c.setTextBaseline(Baseline.MIDDLE)
-        c.strokeText(ui.lift, (w / 2).toFloat(), (h * 0.40).toFloat())
-        c.text(ui.lift, w / 2, h * 0.40, Face.UI700, 10.0, Pal.teal, Align.CENTER, spacing = 0.2)
-    }
+    if (ui.lift.isNotEmpty()) c.haloText(ui.lift, w / 2, h * 0.40, Face.UI700, 10.0, Pal.teal, Pal.white, 3.0, spacing = 0.2)
 }
 
 /* =========================================================
@@ -441,7 +487,7 @@ fun Game.drawPanels(c: Canvas2D, w: Double, h: Double) {
         "pResult" -> drawResult(c, w, h)
     }
 }
-private fun Game.panelFrame(c: Canvas2D, w: Double, h: Double, pw: Double, ph: Double, title: String, sub: String?, close: Boolean): Pair<Double, Double> {
+fun Game.panelFrame(c: Canvas2D, w: Double, h: Double, pw: Double, ph: Double, title: String, sub: String?, close: Boolean): Pair<Double, Double> {
     val x = (w - pw) / 2; val y = max(6.0, (h - ph) / 2)
     c.card(x, y, pw, ph)
     val pad = if (isTouch) 14.0 else 20.0
@@ -517,3 +563,8 @@ fun Game.drawPause(c: Canvas2D, w: Double, h: Double) {
     button(c, "Chơi lại ↺", bx + bw + gap, y + 92, bw) { restartMission() }
     button(c, "Về menu ☰", bx + (bw + gap) * 2, y + 92, bw) { backToMenu() }
 }
+
+/** CSS `@keyframes blink { 50% { opacity: .35 } }` with steps(2) over [period] seconds */
+fun Game.blinkA(period: Double) = if ((ui.clock % period) < period / 2) 1.0 else 0.35
+fun Game.hostQuit() = events.quit()
+fun Game.hostVibrate(ms: Int) = events.vibrate(ms)
