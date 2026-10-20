@@ -80,7 +80,7 @@ class GameHost(val plat: Platform2D, val store: Store, val audio: AudioApi, val 
         "đang gấp mây…" to { w -> w.finishWorld() },
     )
     private fun initStep() {
-        if (step == 0 && !::g.isInitialized) { g = Game(plat, Q, store, audio); g.isTouch = touch; g.aspect = width.toDouble() / height; g.camera.aspect = g.aspect; return }
+        if (step == 0 && !::g.isInitialized) { g = Game(plat, Q, store, audio); g.isTouch = touch; g.events = events; g.aspect = width.toDouble() / height; g.camera.aspect = g.aspect; return }
         val (label, f) = STEPS[step]
         loading = label
         f(g)
@@ -105,6 +105,7 @@ class GameHost(val plat: Platform2D, val store: Store, val audio: AudioApi, val 
         for (geo in g.disposeQ) rr.dispose(geo)
         g.disposeQ.clear()
         p.render(g.scene, g.camera, 0, width, height)
+        if (g.game.started) g.updateInstruments(dt)
         g.drawUi(hud, hudW.toDouble() / density, hudH.toDouble() / density, density, dt)
         g.audioFrame(dt)
     }

@@ -46,7 +46,7 @@ class GameActivity : Activity() {
         if (Build.VERSION.SDK_INT >= 28) window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         val plat = AndroidPlatform(assets)
         val store = PrefsStore(this)
-        audio = Audio { AudioTrackOut() }
+        audio = Audio { AudioTrackOut.create() }
         val vib = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
         val events = object : HostEvents {
             override fun vibrate(ms: Int) {

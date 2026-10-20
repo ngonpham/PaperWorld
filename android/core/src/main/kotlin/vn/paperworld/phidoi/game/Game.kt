@@ -121,6 +121,10 @@ class Game(plat: Platform2D, Q: Quality, val store: Store, val audio: AudioApi) 
     val SET = Settings(store)
     val CAMS = listOf("BÁM ĐUÔI", "GẦN", "BUỒNG LÁI", "KHOÁ MỤC TIÊU", "TOÀN CẢNH")
     val msg = Messages()
+    val ui = UiState()
+    /** platform hooks (vibration, quit) — set by the host */
+    var events: HostEvents = object : HostEvents {}
+    init { audio.onSongChange = { toast("♫ " + it) } }
 
     /* scratch vectors shared by the systems (web: _v1, _v2, _v3) */
     val _v1 = Vec3(); val _v2 = Vec3(); val _v3 = Vec3()

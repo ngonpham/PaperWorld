@@ -18,8 +18,3 @@ fun Game.firstSpawn() = SpawnPt(0.0, -1000.0, 120.0, 0.0)
 fun Game.afterReady() {}
 fun Game.setupGameplay() {}
 fun Game.skipStatics(skip: HashSet<Object3D>) {}
-fun Game.drawUi(c: Canvas2D, w: Double, h: Double, density: Double, dt: Double) {}
-fun Game.pointer(action: Int, id: Int, x: Double, y: Double) {}
-fun Game.key(name: String, down: Boolean, repeat: Boolean) { if (down) keys.add(name) else keys.remove(name) }
-fun Game.backKey() {}
-fun Game.appPaused(on: Boolean) {}
