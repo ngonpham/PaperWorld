@@ -32,7 +32,7 @@ class Glow(val x: Double, val y: Double, val z: Double, val col: String)
  * landmark builders (World+*.kt) use. Mirrors the module scope of the web build so the
  * builders port line for line.
  */
-class World(val plat: Platform2D, val Q: Quality) {
+open class World(val plat: Platform2D, val Q: Quality) {
     val scene = Group()
 
     /* ---------- random + noise (same generators, same call order as the web build) ---------- */
