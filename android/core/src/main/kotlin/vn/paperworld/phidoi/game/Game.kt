@@ -168,6 +168,7 @@ class Game(plat: Platform2D, Q: Quality, val store: Store, val audio: AudioApi) 
     var shadowE = 80.0
     var regT = 0.0; var regPending: String? = null; var regPendT = 0.0
     var cellT = 0.0
+    var batchInfo = ""
 
     /* ---------- the player's aircraft ---------- */
     val F = Flight().also { scene.add(it.g) }

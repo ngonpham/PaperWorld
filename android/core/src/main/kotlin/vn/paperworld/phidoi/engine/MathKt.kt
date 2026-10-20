@@ -257,6 +257,18 @@ class Mat4 {
         e[12] = -(right + left) * w; e[13] = -(top + bottom) * h; e[14] = -(far + near) * p
         return this
     }
+    /** determinant of the upper 3×3 (negative = mirrored) */
+    fun determinant(): Double = e[0] * (e[5] * e[10] - e[9] * e[6]) - e[4] * (e[1] * e[10] - e[9] * e[2]) + e[8] * (e[1] * e[6] - e[5] * e[2])
+    fun decompose(p: Vec3, q: Quat, s: Vec3): Mat4 {
+        var sx = kotlin.math.sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]); val sy = kotlin.math.sqrt(e[4] * e[4] + e[5] * e[5] + e[6] * e[6]); val sz = kotlin.math.sqrt(e[8] * e[8] + e[9] * e[9] + e[10] * e[10])
+        if (determinant() < 0) sx = -sx
+        p.set(e[12], e[13], e[14])
+        val m = clone(); m.e[12] = 0.0; m.e[13] = 0.0; m.e[14] = 0.0
+        m.e[0] /= sx; m.e[1] /= sx; m.e[2] /= sx; m.e[4] /= sy; m.e[5] /= sy; m.e[6] /= sy; m.e[8] /= sz; m.e[9] /= sz; m.e[10] /= sz
+        q.setFromRotationMatrix(m)
+        s.set(sx, sy, sz)
+        return this
+    }
     fun maxScaleOnAxis(): Double {
         val sx = e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; val sy = e[4] * e[4] + e[5] * e[5] + e[6] * e[6]; val sz = e[8] * e[8] + e[9] * e[9] + e[10] * e[10]
         return sqrt(max(sx, max(sy, sz)))

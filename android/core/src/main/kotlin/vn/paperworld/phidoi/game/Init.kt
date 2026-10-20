@@ -30,8 +30,31 @@ fun Game.finishWorld() {
     for (P in PARAS) { skip.add(P.boat); skip.add(P.sail); skip.add(P.rope) }
     for (H in AIHELI) skip.add(H.g)
     for (c in CLOUDS) skip.add(c.g)
+    probeAndBatch(skip)
     collectStatics(skip)
 }
+
+/** find what moves (run the animations a few times), then merge everything else per landmark (World.batchStatics) */
+fun Game.probeAndBatch(skip: Set<Object3D>) {
+    val roots = batchRoots(skip)
+    val snaps = ArrayList<TransformSnap>()
+    for (r in roots) r.traverse { snaps.add(TransformSnap(it)) }
+    val glow0 = env.glow; val fire0 = DRAGON.fireT
+    val far = Vec3(1e6, 0.0, 1e6)
+    for (t in doubleArrayOf(0.7, 3.1, 9.4, 17.0)) for (gl in doubleArrayOf(0.0, 1.0)) {
+        env.glow = gl
+        DRAGON.fireT = 5.0
+        updateMisc(0.1, t)
+        updateDragon(0.1, t, far)
+    }
+    val dynamic = HashSet<Object3D>()
+    for (s in snaps) if (s.changed()) dynamic.add(s.o)
+    for (s in snaps) s.restore()
+    env.glow = glow0; DRAGON.fireT = fire0
+    val n = batchStatics(roots, dynamic)
+    batchInfo = "merged $n meshes, ${dynamic.size} animated objects kept"
+}
+
 
 /** the world is built: models, first spawn, attract mode (web: tail of init) */
 fun Game.onReady() {

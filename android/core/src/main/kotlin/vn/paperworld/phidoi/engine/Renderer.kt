@@ -437,7 +437,8 @@ class Renderer(val gl: GL) {
             val p = if (inst != null) depthInst else depthPlain
             if (curProg != p.id) { gl.useProgram(p.id); curProg = p.id; p.m4("uProj", pf); p.m4("uView", vf) }
             p.m4("uModel", it.obj.matrixWorld.toFloat(fm16))
-            setCull(when (it.mat.side) { Side.FRONT -> GLC.FRONT; Side.BACK -> GLC.BACK; else -> -1 })
+            val mir = it.obj.matrixWorld.determinant() < 0
+            setCull(when (it.mat.side) { Side.FRONT -> if (mir) GLC.BACK else GLC.FRONT; Side.BACK -> if (mir) GLC.FRONT else GLC.BACK; else -> -1 })
             drawGeo(it)
         }
         gl.bindFramebuffer(GLC.FRAMEBUFFER, currentFbo)
@@ -466,7 +467,8 @@ class Renderer(val gl: GL) {
         }
         if (m is ToonMaterial && shadowEnabled && it.obj.receiveShadow) { gl.activeTexture(GLC.TEXTURE0 + 1); gl.bindTexture(GLC.TEXTURE_2D, shadowTex) }
         setDepth(m.depthTest, m.depthWrite)
-        setCull(when (m.side) { Side.FRONT -> GLC.BACK; Side.BACK -> GLC.FRONT; else -> -1 })
+        val mir = it.obj.matrixWorld.determinant() < 0 // mirrored objects wind the other way (three: frontFaceCW)
+        setCull(when (m.side) { Side.FRONT -> if (mir) GLC.FRONT else GLC.BACK; Side.BACK -> if (mir) GLC.BACK else GLC.FRONT; else -> -1 })
         setBlend(m)
         setPoly(m)
         p.m4("uModel", it.obj.matrixWorld.toFloat(fm16))
