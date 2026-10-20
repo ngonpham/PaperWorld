@@ -186,7 +186,7 @@ fun Game.updateBirds(dt: Double, t: Double, pp: Vec3) {
 /** other paragliders soaring over Sơn Trà + parasails off the beaches + Ahamove helicopters */
 class Pilot(val g: Group, val T: Thermal, var y: Double, val ph: Double, val r: Double) { val pos = Vec3() }
 class Para(val boat: Group, val sail: Group, val rope: Lines, val ropeGeo: Geometry, val z0: Double, val z1: Double, val off: Double, val sp: Double, var s: Double, val h: Double, val ph: Double) { val pos = Vec3(); val bp = Vec3() }
-class AiHeli(val m: HeliModel, val route: List<World.Pad>, var i: Int, var hold: Double) { val g get() = m.g; val pos get() = m.g.position; val vel = Vec3(); var psi = 0.0 }
+class AiHeli(val m: Heli, val route: List<World.Pad>, var i: Int, var hold: Double) { val g get() = m.g; val pos get() = m.g.position; val vel = Vec3(); var psi = 0.0 }
 
 fun Game.makeCanopy(cols: List<String>): Group {
     val g = Group()

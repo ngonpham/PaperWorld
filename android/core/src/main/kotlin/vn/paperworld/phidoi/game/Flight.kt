@@ -110,7 +110,7 @@ fun Game.buildModels() {
         val h = makeHeli(true)
         val M = CraftModel(h.g)
         M.rotor = h.rotor; M.tail = h.tail; M.disc = h.disc; M.discMat = h.discMat
-        M.tips = arrayOf(Vec3(-4.0, 1.0, 0.0), Vec3(4.0, 1.0, 0.0))
+        M.tips = arrayOf(h.tips[0], h.tips[1])
         MODELS["heli"] = M
     }
     for (M in MODELS.values) { M.g.visible = false; F.g.add(M.g) }

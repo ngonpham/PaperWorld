@@ -3,6 +3,7 @@ package vn.paperworld.phidoi.desktop
 import kotlin.math.PI
 import vn.paperworld.phidoi.engine.*
 import vn.paperworld.phidoi.world.*
+import vn.paperworld.phidoi.game.*
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -11,6 +12,7 @@ fun main(args: Array<String>) {
     when (mode) {
         "engine" -> engineTest()
         "world" -> worldTest()
+        "game" -> gameTest()
         else -> error("unknown mode $mode")
     }
 }
@@ -102,4 +104,48 @@ fun worldTest() {
     val out = System.getProperty("out", "world.png")
     ImageIO.write(ctx.grab(), "png", File(out))
     println("wrote $out")
+}
+
+/** run the whole game headless: build, fly for -Dpd.sec seconds with simple inputs, screenshot -Dpd.out (+ HUD) */
+fun gameTest() {
+    val w = System.getProperty("w", "960").toInt(); val h = System.getProperty("h", "540").toInt()
+    val ctx = Headless(w, h)
+    val gl = LwjglGL()
+    val host = GameHost(AwtPlatform, MemStore().also { it.put("quality", System.getProperty("q", "2")) }, NullAudio(), object : HostEvents {}, touch = System.getProperty("touch", "true").toBoolean(), density = 1.0)
+    host.onSurfaceCreated(gl)
+    host.onSurfaceChanged(w, h)
+    val hudImg = java.awt.image.BufferedImage(w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB)
+    val rec = RecordingCanvas(AwtPlatform)
+    var t0 = System.nanoTime()
+    while (!host.ready) { rec.reset(); host.drawFrame(0.016, rec, w, h); val t = System.nanoTime(); println("${host.loading} ${(t - t0) / 1_000_000} ms"); t0 = t }
+    val g = host.g
+    val script = System.getProperty("script", "")
+    if (script.isNotEmpty()) for (cmd in script.split(";")) runCmd(g, cmd)
+    val sec = System.getProperty("sec", "3").toDouble()
+    val dt = 1.0 / 30
+    var n = 0
+    t0 = System.nanoTime()
+    while (n * dt < sec) { rec.reset(); host.drawFrame(dt, rec, w, h); n++ }
+    gl.finish()
+    println("sim ${n} frames in ${(System.nanoTime() - t0) / 1_000_000} ms; mode=${g.F.mode} pos=${g.F.pos} v=${"%.1f".format(g.F.v)} crash='${g.F.lastCrash}' err=${gl.getError()}")
+    val img = ctx.grab()
+    val gfx = img.createGraphics()
+    rec.replay(AwtCanvas(gfx))
+    gfx.dispose()
+    val out = System.getProperty("out", "game.png")
+    ImageIO.write(img, "png", File(out))
+    println("wrote $out")
+}
+/** tiny command language for tests: start | key:shift | unkey:shift | hour:20 | craft:heli | cam:2 | spawn:x,y,z,psi */
+fun runCmd(g: Game, cmd: String) {
+    val (k, v) = (cmd.split(":", limit = 2) + "").let { it[0].trim() to it[1].trim() }
+    when (k) {
+        "start" -> { g.game.started = true; g.F.g.visible = true; g.game.camSnap = true }
+        "key" -> g.keys.add(v)
+        "unkey" -> g.keys.remove(v)
+        "hour" -> { g.ENV.hour = v.toDouble(); g.ENV.target = v.toDouble() }
+        "craft" -> g.setCraft(v, true)
+        "cam" -> g.game.camMode = v.toInt()
+        "spawn" -> { val a = v.split(",").map { it.toDouble() }; g.spawnAt(SpawnPt(a[0], a[2], a[1], a.getOrNull(3))) }
+    }
 }

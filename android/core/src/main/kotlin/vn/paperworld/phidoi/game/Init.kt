@@ -32,3 +32,36 @@ fun Game.finishWorld() {
     for (c in CLOUDS) skip.add(c.g)
     collectStatics(skip)
 }
+
+/** the world is built: models, first spawn, attract mode (web: tail of init) */
+fun Game.onReady() {
+    buildModels()
+    setCraft(store.getString("craft")?.takeIf { CRAFT.containsKey(it) } ?: "jet", true)
+    spawnAt(firstSpawn())
+    F.g.visible = false
+    updateTiles(camera.position, 40)
+    updateCells(camera.position)
+    READY = true
+    afterReady()
+}
+
+/* =========================================================
+   AUDIO — fill the frame the synth reads (web: updateAudio's reads of game state)
+   ========================================================= */
+private val audioF = AudioFrame()
+fun Game.audioFrame(dt: Double) {
+    val f = audioF; val C = F.c
+    f.flying = game.started && F.mode != "crash"
+    f.v = F.v; f.craftId = C.id; f.heli = C.heli; f.glide = C.glide; f.landed = F.mode == "landed"; f.modeFly = F.mode == "fly"
+    f.vy = F.vy; f.thr = F.thr; f.energy = F.energy
+    f.afterburner = C.id == "jet" && IN.boost > 0.05 && F.energy > 0.01
+    f.camMode = game.camMode
+    Geog.sample(camera.position.x, camera.position.z)
+    f.shore = smooth(260.0, 20.0, kotlin.math.abs(Geog.S.sd)) * smooth(120.0, 10.0, camera.position.y)
+    f.rain = ENV.rain; f.climb = F.vs; f.vario = SET.vario; f.gameT = game.t
+    f.cam.copy(camera.position)
+    f.bellAt = null
+    for (k in listOf("buddha", "thuyson")) { val L = LANDMARKS[k] ?: continue; if (kotlin.math.hypot(F.pos.x - L.x, F.pos.z - L.z) < 260) { f.bellAt = Vec3(L.x, if (L.y != 0.0) L.y else 20.0, L.z); break } }
+    f.gullOk = f.shore > 0.2 || BIRDS.list.any { !it.eagle && it.pos.distanceTo(camera.position) < 120 }
+    audio.update(dt, f)
+}
