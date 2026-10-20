@@ -46,11 +46,12 @@ class GameHost(val plat: Platform2D, val store: Store, val audio: AudioApi, val 
     private fun forgetGpu(o: Object3D) {
         when (o) {
             is Mesh -> { o.geometry.gpu = null; (o as? InstancedMesh)?.data?.gpu = null; forgetMat(o.material); o.materials?.forEach { forgetMat(it) } }
-            is Points -> { o.geometry.gpu = null; o.material.map?.gpu = 0 }
+            is Points -> { o.geometry.gpu = null; forgetTex(o.material.map) }
             is Lines -> o.geometry.gpu = null
         }
     }
-    private fun forgetMat(m: Material) { when (m) { is ToonMaterial -> m.map?.gpu = 0; is BasicMaterial -> m.map?.gpu = 0; is SeaMaterial -> m.map.gpu = 0; else -> {} } }
+    private fun forgetTex(t: Texture?) { if (t != null) { t.gpu = 0; t.gpuVersion = 0 } }
+    private fun forgetMat(m: Material) { when (m) { is ToonMaterial -> forgetTex(m.map); is BasicMaterial -> forgetTex(m.map); is SeaMaterial -> forgetTex(m.map); else -> {} } }
 
     fun onSurfaceChanged(w: Int, h: Int) {
         width = maxOf(1, w); height = maxOf(1, h)
