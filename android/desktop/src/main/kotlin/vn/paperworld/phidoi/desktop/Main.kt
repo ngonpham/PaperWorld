@@ -13,6 +13,7 @@ fun main(args: Array<String>) {
         "engine" -> engineTest()
         "world" -> worldTest()
         "game" -> gameTest()
+        "audio" -> audioTest()
         else -> error("unknown mode $mode")
     }
 }
