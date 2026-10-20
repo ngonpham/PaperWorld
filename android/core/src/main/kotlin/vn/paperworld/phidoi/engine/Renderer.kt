@@ -216,8 +216,9 @@ class Renderer(val gl: GL) {
             val px = t.pixels
             val data: ByteBuffer
             if (px != null) {
+                // canvas rows go bottom-up, like three.js's flipY for canvas textures
                 data = buf(px.size * 4)
-                for (p in px) { data.put(((p shr 16) and 255).toByte()); data.put(((p shr 8) and 255).toByte()); data.put((p and 255).toByte()); data.put(((p ushr 24) and 255).toByte()) }
+                for (row in t.height - 1 downTo 0) for (k in row * t.width until (row + 1) * t.width) { val p = px[k]; data.put(((p shr 16) and 255).toByte()); data.put(((p shr 8) and 255).toByte()); data.put((p and 255).toByte()); data.put(((p ushr 24) and 255).toByte()) }
                 data.flip()
             } else { val b = t.bytes!!; data = buf(b.size); data.put(b); data.flip() }
             gl.texImage2D(GLC.TEXTURE_2D, 0, if (t.srgb) GLC.SRGB8_ALPHA8 else GLC.RGBA8, t.width, t.height, GLC.RGBA, GLC.UNSIGNED_BYTE, data)

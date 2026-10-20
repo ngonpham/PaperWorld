@@ -831,6 +831,12 @@ open class World(val plat: Platform2D, val Q: Quality) {
     }
 
     /* ---------- registries filled by World+City.kt ---------- */
+    /** Dragon Bridge state: LED materials [scales, fins], fire point, head group (read by the fire animation) */
+    class DragonState { val mats = ArrayList<ToonMaterial>(); val head = Vec3(); val dir = Vec3(1.0, 0.0, 0.0); var fireT = 0.0; var fire = 0.0; var headG: Group? = null }
+    val DRAGON = DragonState()
+    /** Đà Nẵng airport runway: x and its z extent */
+    class AirportArea(val x: Double, val z0: Double, val z1: Double)
+    val AIRPORT = AirportArea(-900.0, -700.0, 450.0)
 
     /* ---------- registries filled by World+SonTra.kt / World+Coast.kt ---------- */
     /** car spawn z's along the coast road (web COAST_CARS) */
