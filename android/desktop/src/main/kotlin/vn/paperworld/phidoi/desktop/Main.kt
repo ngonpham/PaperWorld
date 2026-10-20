@@ -1,6 +1,8 @@
 package vn.paperworld.phidoi.desktop
 
+import kotlin.math.PI
 import vn.paperworld.phidoi.engine.*
+import vn.paperworld.phidoi.world.*
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -8,6 +10,7 @@ fun main(args: Array<String>) {
     val mode = args.firstOrNull() ?: "engine"
     when (mode) {
         "engine" -> engineTest()
+        "world" -> worldTest()
         else -> error("unknown mode $mode")
     }
 }
@@ -60,6 +63,43 @@ fun engineTest() {
     gl.finish()
     println("frame ms=${(System.nanoTime() - t0) / 1e6} draws=${r.drawCalls} err=${gl.getError()}")
     val out = System.getProperty("out", "engine.png")
+    ImageIO.write(ctx.grab(), "png", File(out))
+    println("wrote $out")
+}
+
+/** build the world and render a view: -Dpd.cam=x,y,z -Dpd.look=x,y,z -Dpd.hour=9.5 */
+fun worldTest() {
+    val w = System.getProperty("w", "960").toInt(); val h = System.getProperty("h", "540").toInt()
+    val ctx = Headless(w, h)
+    val gl = LwjglGL()
+    val r = Renderer(gl)
+    val pipe = Pipeline(r)
+    pipe.resize(w, h, 4)
+    var t0 = System.nanoTime()
+    fun lap(s: String) { val t = System.nanoTime(); println("$s ${(t - t0) / 1_000_000} ms"); t0 = t }
+    val W = World(AwtPlatform, QP[2])
+    lap("init")
+    W.buildGrid(); lap("grid")
+    W.buildTiles(); lap("tiles")
+    W.buildLandmarks(); lap("landmarks")
+    W.buildInstances(); lap("instances")
+    val cam = Camera(62.0, w.toDouble() / h, 0.5, 16000.0)
+    val cp = System.getProperty("cam", "-200,260,-900").split(",").map { it.toDouble() }
+    val lk = System.getProperty("look", "300,0,-2200").split(",").map { it.toDouble() }
+    cam.position.set(cp[0], cp[1], cp[2]); cam.lookAt(Vec3(lk[0], lk[1], lk[2]))
+    W.ENV.hour = System.getProperty("hour", "9.5").toDouble()
+    W.applyEnv(); W.applyTo(r)
+    W.updateTiles(cam.position, 400); lap("hi tiles")
+    W.updateCells(cam.position)
+    W.collectStatics(setOf(W.sky, W.sea) + W.ranges)
+    W.updateStatics(cam.position, W.fogFar)
+    W.sky.position.copy(cam.position)
+    for (rg in W.ranges) rg.position.set(cam.position.x * 0.85, 0.0, cam.position.z * 0.85)
+    r.shadowTarget.set(lk[0], 0.0, lk[2])
+    pipe.time = 3.0
+    pipe.render(W.scene, cam, 0, w, h)
+    gl.finish(); lap("frame (draws=${r.drawCalls}, err=${gl.getError()})")
+    val out = System.getProperty("out", "world.png")
     ImageIO.write(ctx.grab(), "png", File(out))
     println("wrote $out")
 }

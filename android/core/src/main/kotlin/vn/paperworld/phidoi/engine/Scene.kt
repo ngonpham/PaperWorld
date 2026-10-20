@@ -168,6 +168,8 @@ class ToonMaterial(val color: Color = Color()) : Material() {
     var emissiveIntensity = 1.0
     /** emissive is multiplied by the vertex/instance colour (lanterns, lamps) */
     var emissiveTint = false
+    /** emissive is multiplied by the colour map (three's emissiveMap = map) */
+    var emissiveMap = false
     var building: BuildingParams? = null
     constructor(hex: String) : this(Color.of(hex))
 }

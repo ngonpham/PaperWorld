@@ -288,6 +288,7 @@ class Renderer(val gl: GL) {
         if (hasMap) sig = sig or (1 shl 7)
         if (m is ToonMaterial) {
             if (m.emissiveTint) sig = sig or (1 shl 8)
+            if (m.emissiveMap && m.map != null) sig = sig or (1 shl 14)
             if (m.building != null) sig = sig or (1 shl 9)
             if (m.side == Side.DOUBLE) sig = sig or (1 shl 10)
             if (it.obj.receiveShadow && shadowEnabled) sig = sig or (1 shl 11)
@@ -306,6 +307,7 @@ class Renderer(val gl: GL) {
         if (sig and (1 shl 11) != 0) d.add("SHADOW")
         if (sig and (1 shl 12) != 0) d.add("FOG")
         if (sig and (1 shl 13) != 0) d.add("ATTEN")
+        if (sig and (1 shl 14) != 0) d.add("EMMAP")
         val key = "p$sig"
         val p = when (kind) {
             1 -> program(key, Shaders.TOON_VS, Shaders.TOON_FS, d)

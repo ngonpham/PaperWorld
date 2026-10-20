@@ -134,6 +134,9 @@ void main(){
 #ifdef EMTINT
   em *= vColor;
 #endif
+#ifdef EMMAP
+  em *= texture(uMap, vUv).rgb;
+#endif
   col += em;
 #ifdef BUILDING
   col += uWarm * winLit * uGlow * 1.5;

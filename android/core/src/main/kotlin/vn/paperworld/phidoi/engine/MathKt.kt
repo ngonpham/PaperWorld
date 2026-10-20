@@ -3,7 +3,6 @@ package vn.paperworld.phidoi.engine
 import kotlin.math.*
 
 /* ---------- scalar helpers (same semantics as the web game) ---------- */
-const val PI = Math.PI
 const val TAU = Math.PI * 2
 
 fun clamp(v: Double, a: Double, b: Double) = if (v < a) a else if (v > b) b else v
