@@ -17,7 +17,8 @@ and a travel journal. See [danang/README.md](danang/README.md).
 jet, a seaplane or an Ahamove helicopter against the Black Ink Gang's ink kites, carbon-paper fighters and ink bombers,
 defend the Dragon Bridge, Sơn Trà, the Marble Mountains and Hội An, and bring down the Giant Squid airship. Six
 missions, survival and a practice range, guns with lead aiming, lock-on missiles, flares and Ahamove supply drops.
-See [phidoi/README.md](phidoi/README.md).
+See [phidoi/README.md](phidoi/README.md). A native **Android** port (Kotlin + OpenGL ES 3, no WebView) lives in
+[android/](android/README.md).
 
 ## Features
 
