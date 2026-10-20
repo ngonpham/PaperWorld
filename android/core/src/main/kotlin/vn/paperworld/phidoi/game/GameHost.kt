@@ -22,6 +22,7 @@ class GameHost(val plat: Platform2D, val store: Store, val audio: AudioApi, val 
     private var r: Renderer? = null
     private var pipe: Pipeline? = null
     var width = 1; var height = 1
+    val drawCalls get() = r?.drawCalls ?: 0
     private val q = ConcurrentLinkedQueue<(GameHost) -> Unit>()
     private var step = 0
     var loading = "đang gấp bản đồ…"

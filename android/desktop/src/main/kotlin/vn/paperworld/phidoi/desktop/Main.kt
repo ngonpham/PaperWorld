@@ -127,7 +127,7 @@ fun gameTest() {
     t0 = System.nanoTime()
     while (n * dt < sec) { rec.reset(); host.drawFrame(dt, rec, w, h); n++ }
     gl.finish()
-    println("sim ${n} frames in ${(System.nanoTime() - t0) / 1_000_000} ms; mode=${g.F.mode} pos=${g.F.pos} v=${"%.1f".format(g.F.v)} crash='${g.F.lastCrash}' err=${gl.getError()}")
+    println("sim ${n} frames in ${(System.nanoTime() - t0) / 1_000_000} ms; mode=${g.F.mode} pos=${g.F.pos} v=${"%.1f".format(g.F.v)} crash='${g.F.lastCrash}' draws=${host.drawCalls} err=${gl.getError()}")
     val img = ctx.grab()
     val gfx = img.createGraphics()
     rec.replay(AwtCanvas(gfx))
