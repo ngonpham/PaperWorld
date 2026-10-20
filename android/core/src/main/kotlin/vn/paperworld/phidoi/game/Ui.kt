@@ -205,14 +205,6 @@ fun Game.togglePanel(id: String) {
     game.panelT = game.t
     if (id == "pMap") onBigMapOpen()
 }
-fun Game.togglePause(force: Boolean? = null) {
-    if (!game.started || MS.state == "done") return
-    val on = force ?: !game.paused
-    closePanels()
-    game.paused = on
-    if (on) game.panel = "pPause"
-}
-
 /* =========================================================
    INSTRUMENTS — airspeed, attitude, vario, altitude, heading tape (web: updateHUD + drawADI)
    ========================================================= */
@@ -519,7 +511,7 @@ fun Game.drawPause(c: Canvas2D, w: Double, h: Double) {
     val x = (w - pw) / 2; val y = (h - ph) / 2
     c.card(x, y, pw, ph)
     c.text("Tạm dừng", w / 2, y + 34, Face.HAND, 30.0, Pal.ink, Align.CENTER)
-    c.text(pauseSub(), w / 2, y + 62, Face.UI500, 10.5, rgba(31, 29, 43, 0.75), Align.CENTER)
+    c.text(pauseSub, w / 2, y + 62, Face.UI500, 10.5, rgba(31, 29, 43, 0.75), Align.CENTER)
     val bw = 100.0; val gap = 8.0; val bx = w / 2 - (bw * 3 + gap * 2) / 2
     button(c, "Tiếp tục ▶", bx, y + 92, bw, red = true) { togglePause(false) }
     button(c, "Chơi lại ↺", bx + bw + gap, y + 92, bw) { restartMission() }

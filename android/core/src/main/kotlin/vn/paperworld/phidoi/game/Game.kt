@@ -161,6 +161,42 @@ class Game(plat: Platform2D, Q: Quality, val store: Store, val audio: AudioApi) 
 
     /* ---------- combat state (Combat*.kt / Missions.kt) ---------- */
     // COMBAT-STATE-BEGIN
+    /** progress saved on this device (web: SAVE) */
+    val SAVE = loadSave(store)
+    /** the menu selection: craft, mission, difficulty (web: PICK) */
+    val PICK = Pick(store)
+    var DF = DIFF[1]
+    val combat = Group().also { scene.add(it) }
+    val PL = PlayerState()
+    val MS = MissionState()
+    val TRC = makeTRC()
+    val BLB = makeBLB()
+    val BUL = ArrayList<Bullet>()
+    val CIV = ArrayList<Civ>()
+    val INKD = ArrayList<Mesh>()
+    val inkGeo = Geo.circle(1.0, 14).rotateX(-PI / 2)
+    val inkMat = BasicMaterial("#2a1f3d").also { it.transparent = true; it.opacity = 0.72; it.depthWrite = false; it.polygonOffset = true; it.polyFactor = -6f; it.polyUnits = -6f }
+    val dsCache = HashMap<String, ToonMaterial>()
+    val eyeMat = toon("#ff3b2f") { emissive.copy(Color.of("#ff2a1a")); emissiveIntensity = 0.9 }
+    val engMat = toon("#b04cff") { emissive.copy(Color.of("#b04cff")); emissiveIntensity = 0.7 }
+    val flameMat = BasicMaterial("#ffb347").also { it.transparent = true; it.opacity = 0.85; it.blending = Blend.ADDITIVE; it.depthWrite = false }
+    val podMat = toon("#c04cff") { emissive.copy(Color.of("#b04cff")); emissiveIntensity = 0.65 }
+    val coreMat = toon("#ff3b2f") { emissive.copy(Color.of("#ff2a1a")); emissiveIntensity = 0.4 }
+    val EK = makeEK()
+    val EN = ArrayList<Enemy>()
+    val MIS = ArrayList<Missile>()
+    val FLR = ArrayList<Flare>()
+    val PKS = ArrayList<Pickup>()
+    val DLV = Delivery()
+    val FT = ArrayList<FloatText>()
+    val MISSIONS = makeMissions()
+    val SURV = makeSurv()
+    val PRAC = makePrac()
+    val ALLM = MISSIONS + SURV + PRAC
+    /** the results panel once a mission ends (web: the #pResult DOM) */
+    var result: MissionResult? = null
+    /** the pause panel's subtitle (web: #pauseSub) */
+    var pauseSub = ""
     // COMBAT-STATE-END
 
     /* ---------- rain + loop bookkeeping ---------- */

@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
         "world" -> worldTest()
         "game" -> gameTest()
         "audio" -> audioTest()
+        "combat" -> combatTest()
         else -> error("unknown mode $mode")
     }
 }
@@ -126,7 +127,12 @@ fun gameTest() {
     val dt = 1.0 / 30
     var n = 0
     t0 = System.nanoTime()
-    while (n * dt < sec) { rec.reset(); host.drawFrame(dt, rec, w, h); n++ }
+    // -Dpd.norender=true: step the simulation only, render just the last frame
+    val norender = System.getProperty("norender", "false").toBoolean()
+    while (n * dt < sec) {
+        if (norender && (n + 1) * dt < sec) { g.frame(dt, null, null) } else { rec.reset(); host.drawFrame(dt, rec, w, h) }
+        n++
+    }
     gl.finish()
     println(g.batchInfo); println("sim ${n} frames in ${(System.nanoTime() - t0) / 1_000_000} ms; mode=${g.F.mode} pos=${g.F.pos} v=${"%.1f".format(g.F.v)} crash='${g.F.lastCrash}' draws=${host.drawCalls} err=${gl.getError()}")
     val img = ctx.grab()
@@ -137,7 +143,10 @@ fun gameTest() {
     ImageIO.write(img, "png", File(out))
     println("wrote $out")
 }
-/** tiny command language for tests: start | key:shift | unkey:shift | hour:20 | craft:heli | cam:2 | spawn:x,y,z,psi */
+/**
+ * tiny command language for tests: start | key:shift | unkey:shift | hour:20 | craft:heli | cam:2 | spawn:x,y,z,psi
+ * combat: mission:m1 | fire | unfire | missile | flare | target | enemy:fighter[,dist[,dy]] | boss[:dist] | sim:sec (no render) | menu | diff:0..2 | delivery | pickup:kind | inv
+ */
 fun runCmd(g: Game, cmd: String) {
     val (k, v) = (cmd.split(":", limit = 2) + "").let { it[0].trim() to it[1].trim() }
     when (k) {
@@ -148,5 +157,28 @@ fun runCmd(g: Game, cmd: String) {
         "craft" -> g.setCraft(v, true)
         "cam" -> g.game.camMode = v.toInt()
         "spawn" -> { val a = v.split(",").map { it.toDouble() }; g.spawnAt(SpawnPt(a[0], a[2], a[1], a.getOrNull(3))) }
+        "mission" -> g.startMission(v)
+        "menu" -> g.backToMenu()
+        "diff" -> g.PICK.diff = v.toInt()
+        "fire" -> g.keys.add(" ")
+        "unfire" -> g.keys.remove(" ")
+        "missile" -> g.IN.missileQ = true
+        "flare" -> g.IN.flareQ = true
+        "target" -> g.IN.targetQ = true
+        "enemy" -> {
+            val a = v.split(",")
+            val d = a.getOrNull(1)?.toDouble() ?: 250.0; val dy = a.getOrNull(2)?.toDouble() ?: 0.0
+            val f = fwd(g.F.psi, 0.0)
+            g.spawnEnemy(a[0], g.F.pos.x + f.x * d, g.F.pos.y + dy, g.F.pos.z + f.z * d, psi = g.F.psi, anchor = if (a[0] == "kite") vn.paperworld.phidoi.engine.Vec3(g.F.pos.x + f.x * d, g.F.pos.y + dy, g.F.pos.z + f.z * d) else null)
+        }
+        "boss" -> {
+            val d = v.toDoubleOrNull() ?: 300.0
+            val f = fwd(g.F.psi, 0.0)
+            g.spawnEnemy("boss", g.F.pos.x + f.x * d, g.F.pos.y, g.F.pos.z + f.z * d, psi = g.F.psi + PI / 2)
+        }
+        "delivery" -> g.startDelivery()
+        "pickup" -> { val f = fwd(g.F.psi, 0.0); g.spawnPickup(v.ifEmpty { "repair" }, g.F.pos.x + f.x * 40, g.F.pos.y + 4, g.F.pos.z + f.z * 40) }
+        "inv" -> g.PL.inv = 1e9
+        "sim" -> { var t = 0.0; val dt = 1.0 / 30; while (t < v.toDouble()) { g.frame(dt, null, null); t += dt } }
     }
 }

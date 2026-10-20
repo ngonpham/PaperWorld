@@ -9,11 +9,9 @@ fun Game.drawMinimapCard(c: Canvas2D, w: Double, h: Double, dt: Double) {}
 fun Game.onBigMapOpen() {}
 fun Game.drawBigMapPanel(c: Canvas2D, w: Double, h: Double) {}
 fun Game.drawResult(c: Canvas2D, w: Double, h: Double) {}
-fun Game.pauseSub() = ""
-fun Game.restartMission() {}
-fun Game.resultAgain() {}
-fun Game.backToMenu() { game.started = false; game.panel = null; game.paused = false; F.g.visible = false }
-fun Game.start() { game.started = true; F.g.visible = true; game.camSnap = true; game.fade = 1.0 }
+fun Game.restartMission() { MS.def?.let { startMission(it.id) } }
+fun Game.resultAgain() { MS.def?.let { startMission(it.id) } }
+fun Game.start() { if (READY && !game.started) startMission(PICK.mission) }
 fun Game.drawIntro(c: Canvas2D, w: Double, h: Double) {
     val cw = 300.0; val ch = 120.0; val x = (w - cw) / 2; val y = (h - ch) / 2
     c.card(x, y, cw, ch)
