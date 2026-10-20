@@ -833,6 +833,15 @@ open class World(val plat: Platform2D, val Q: Quality) {
     /* ---------- registries filled by World+City.kt ---------- */
 
     /* ---------- registries filled by World+SonTra.kt / World+Coast.kt ---------- */
+    /** car spawn z's along the coast road (web COAST_CARS) */
+    val COAST_CARS = ArrayList<Double>()
+    /** anchored fishing boats [x, z] (web BOAT_LIGHTS) */
+    val BOAT_LIGHTS = ArrayList<DoubleArray>()
+    /** douc langurs: bobbing group, base y, phase (web DOUCS: { g, y, ph }) */
+    class Douc(val g: Group, val y: Double, val ph: Double)
+    val DOUCS = ArrayList<Douc>()
+    /** discoveries found at several spots (web disc.multi: [[x, z], ...]) */
+    val DISC_MULTI = HashMap<Disc, List<DoubleArray>>()
 
     /* ---------- registries filled by World+South.kt ---------- */
     /** Hội An lantern strings across the streets: [x0, y0, z0, x1, y1, z1] */
