@@ -169,6 +169,8 @@ class Renderer(val gl: GL) {
     }
 
     private fun vao(g: Geometry, inst: InstanceData?): Int {
+        // the element-array binding is VAO state: never upload index buffers with a VAO bound
+        gl.bindVertexArray(0)
         val gg = gpuGeo(g)
         if (inst == null) {
             if (gg.vao == 0) { gg.vao = gl.genVertexArray(); gl.bindVertexArray(gg.vao); bindGeoAttribs(g, gg); gl.bindVertexArray(0) }
